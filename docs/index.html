@@ -1,8 +1,616 @@
+<!DOCTYPE html>
 <html>
 <head>
+<title>Plexdata CSV Parser</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    font-family: "Calibri", sans-serif;
+}
+.navbar {
+    height: 100%;
+    width: 180px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+.navbar a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 1.6em;
+    color: #818181;
+    display: block;
+}
+.navbar a:hover {
+    color: #F1F1F1;
+}
+.content {
+    margin-left: 180px; 
+    font-size: 1.4em;
+    padding: 10px 50px;
+}
+code {
+  font-family: "Consolas", monospace;
+}
+pre {
+    padding: 20px;
+    font-size: 0.7em;
+    background-color: #FCFCFC;
+    border: 1px solid #C4C4C4;
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+}
+th {
+    background-color: #EDEDED;
+    color: #636363;
+}
+table, th, td {
+    border-top: 1px solid #C4C4C4;
+    border-bottom: 1px solid #C4C4C4;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+tbody tr:nth-child(odd){
+    background-color: #FCFCFC;
+}
+</style>
 </head>
-<body style="margin: 100px;">
-<h1>To Be Done...</h1>
-<p>Sorry, not yet done...</p>
+<body>
+<div class="navbar">
+  <a href="#overview">Overview</a>
+  <a href="#licensing">Licensing</a>
+  <a href="#installation">Installation</a>
+  <a href="#importing">Importing</a>
+  <a href="#exporting">Exporting</a>
+  <a href="#settings">Settings</a>
+  <a href="#limitation">Limitation</a>
+</div>
+<div class="content">
+  
+<header><center><h1>Plexdata CSV Parser</h1></center></header> 
+
+<h2 id="overview">Overview</h2>
+
+<p>
+The <i>Plexdata CSV Parser</i> represents a library that allows importing and exporting of CSV 
+files based on user defined classes. Further, it is possible to configure the importing and 
+exporting behavior.
+</p>
+<p>
+Main feature of this library is that users only need to create an own class representing a single 
+line of a CSV file. Each property that has to be included in the CSV processing should be tagged by 
+a proper CSV attribute, which can be obtained from this library. Thereafter, this custom class can 
+be used either together with the importer or together with the exporter to process CSV files.
+</p>
+<p>
+Finally, it would also be possible (assuming a proper configuration is used) to write a CSV output 
+according to the rules of RFC 4180. For more information about RFC 4180 please visit the web&#8209;site 
+under <a target="_blank" href="https://www.ietf.org/rfc/rfc4180.txt">https://www.ietf.org/rfc/rfc4180.txt</a>.
+</p>
+
+<h2 id="licensing">Licensing</h2>
+
+<p>
+The software has been published under the terms of
+</p>
+
+<h3>MIT License</h3>
+
+<p>
+Copyright &copy; 2018 <a target="_blank" href="http://www.plexdata.de/">plexdata.de</a>
+</p>
+<p>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the "Software"), to deal in the Software without restriction, including 
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject 
+to the following conditions:
+</p>
+<p>
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+</p>
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+IN THE SOFTWARE.
+</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>
+The binary files of the <i>Plexdata CSV Parser</i> are provided as <i>NuGet</i> package and can be obtained from 
+<a target="_blank" href="https://www.nuget.org/packages/Plexdata.CsvParser.NET/">https://www.nuget.org/packages/Plexdata.CsvParser.NET</a>. 
+How to install this <i>NuGet</i> package manually is explained there.
+</p>
+<p>
+Using the <i>Plexdata CSV Parser</i> together with <i>Visual Studio</i>.
+</p>
+<ul>
+<li>
+Create a new <i>.NET Framework</i> project.
+</li>
+<li>
+Open menu <i>Tools &rarr; NuGet Package Manager</i> and choose command <i>Manage NuGet Packages for Solution&hellip;</i>.
+<ul>
+<li>
+Alternatively, simply right&#8209;click the project in the <i>Solution Explorer</i> and choose command <i>Manage NuGet Packages&hellip;</i>.
+</li>
+</ul>
+</li>
+<li>
+Switch to <i>Browse</i> page and in the search box just type <code>plexdata.csvparser</code>.
+</li>
+<li>
+From the shown list select <i>Plexdata.CsvParser.NET</i> and click button <code>[Install]</code> at the right.
+</li>
+<li>
+Confirm the dialog box and that&rsquo;s it.
+</li>
+</ul>
+<p>
+Additionally, all releases can be downloaded from <i>GitHub</i>. Please visit page 
+<a target="_blank" href="https://github.com/akesseler/Plexdata.CsvParser/releases">Plexdata CSV Parser</a> 
+to find all available versions.
+</p>
+
+<h2 id="importing">Importing</h2>
+
+<p>
+Importing data from an external CSV file is pretty easy. The only thing to do is to create a custom entity 
+class that contains public properties. As next, each of the properties should be tagged by an attribute called 
+<code>CsvColumn</code>. 
+</p>
+<p>
+On the other hand, each property that is not tagged by attribute <code>CsvColumn</code> will be ignored implicitly. 
+But it would also be possible to explicitly exclude properties from being processed. For such a case the library 
+provides an attribute called <code>CsvIgnore</code>.
+</p>
+
+<p>
+Please keep in mind, all examples in this section are provided in C#. For other languages, the code should look 
+pretty similar.
+</p>
+
+<p>
+Here below an example of how such a custom entity class could look like.
+</p>
+
+<pre><code>[CsvDocument]
+class CsvCustomer
+{
+    [CsvIgnore]
+    public Int32 Id { get; set; }
+
+    [CsvColumn(Offset = 2, Header = "Identifier")]
+    public Int32 ExternalId { get; set; }
+
+    [CsvColumn(Offset = 1, Header = "Forename")]
+    public String FirstName { get; set; }
+
+    [CsvColumn(Offset = 0, Header = "Surname")]
+    public String LastName { get; set; }
+
+    [CsvColumn(Offset = 5, Header = "Active")]
+    public Boolean IsActive { get; set; }
+
+    [CsvColumn(Offset = 3, Header = "Date")]
+    public DateTime? EntryDate { get; set; }
+
+    [CsvColumn(Offset = 4, Header = "Sales")]
+    public Decimal SalesAverage { get; set; }
+
+    [CsvColumn(Offset = 6, Header = "Notes")]
+    public String Description { get; set; }
+}</code></pre>
+
+<p>
+With an entity class as show above it would be possible to import a CSV file that looks like shown below.
+</p>
+
+<pre><code>Surname,  Forename,    Identifier, Date,       Sales,      Active, Notes
+"Marley", "Bob",       1001,       2007-05-03, "1,234.56", nope,   "Have a short note here."
+"Monroe", "Marilyn",   1002,       2008-06-05, "1,234.56", nope,   ""
+"Snipes", "Wesley",    1003,       2009-07-06, "1,234.56", yeah,   "Have a short note here." 
+"Hurley", "Elizabeth", 1004,       2005-08-08, "1,234.56", yeah,   "Have a short note here."</code></pre>
+
+<p>
+As next it might be considered to use a configuration. Such a configuration is done by using the 
+class <code>CsvSettings</code>. With this class it becomes possible to tell the importer, for example, 
+how to handle decimal conversions. In this conjunction it&rsquo;s important to know that the importer 
+always uses current UI culture. This means that on a <i>German</i> operating system all decimal numbers are 
+split by a comma. Therefore, if it is wanted to force the usage of a dot separator instead, the culture 
+&ldquo;en&#8209;US&rdquo; should be used.
+</p>
+
+<p>
+Here an example of how the importer could be configured using &ldquo;en&#8209;US&rdquo; as culture and replacing 
+each &ldquo;yeah&rdquo; value of type Boolean by &ldquo;true&rdquo; as well as each &ldquo;nope&rdquo; value 
+by &ldquo;false&rdquo;.
+</p>
+
+<pre><code>CsvSettings settings = new CsvSettings
+{
+    Culture = CultureInfo.GetCultureInfo("en-US"),
+    Mappings = new CsvMappings
+    {
+        TrueValues = new List<String> { "yeah" },
+        FalseValues = new List<String> { "nope" },
+    },
+};</code></pre>
+
+<p>
+Now, the only remaining thing is to perform the import. This is done by calling the <i>CSV Importer</i> 
+together with all necessary parameters. The example below shows exemplarily how to do the file import.
+</p>
+
+<pre><code>IEnumerable<CsvCustomer> result = CsvImporter<CsvCustomer>.Load(filename, settings);
+
+foreach (CsvCustomer current in result)
+{
+    Console.WriteLine(current.ToString());
+}
+
+Console.ReadKey();</code></pre>
+
+<p>Finally, please note, it is strictly recommended to surround each call to the <i>CSV Importer</i> by an 
+appropriated <code>try&hellip;catch</code> block!</p>
+
+<h2 id="exporting">Exporting</h2>
+
+<p>
+The same as mentioned in section <a href="#importing">Importing</a> applies to Exporting as well. First thing 
+to do, a custom entity class should be created. Such a class could look like shown below.
+</p>
+
+<pre><code>[CsvDocument]
+class CsvCustomer
+{
+    [CsvIgnore]
+    public Int32 Id { get; set; }
+
+    [CsvColumn(Offset = 2, Header = "Identifier")]
+    public Int32 ExternalId { get; set; }
+
+    [CsvColumn(Offset = 1, Header = "Forename")]
+    public String FirstName { get; set; }
+
+    [CsvColumn(Offset = 0, Header = "Surname")]
+    public String LastName { get; set; }
+
+    [CsvColumn(Offset = 5, Header = "Active")]
+    public Boolean IsActive { get; set; }
+
+    [CsvColumn(Offset = 3, Header = "Date")]
+    public DateTime? EntryDate { get; set; }
+
+    [CsvColumn(Offset = 4, Header = "Sales")]
+    public Decimal SalesAverage { get; set; }
+
+    [CsvColumn(Offset = 6, Header = "Notes")]
+    public String Description { get; set; }
+}</code></pre>
+
+<p>
+As next a configuration should be created which is used together with the <i>CSV Exporter</i>. 
+Here an example of such a configuration.
+</p>
+
+<pre><code>CsvSettings settings = new CsvSettings
+{
+    Culture = CultureInfo.GetCultureInfo("en-US"),
+    Textual = true,
+    Mappings = new CsvMappings
+    {
+        TrueValue = "yeah",
+        FalseValue = "nope",
+    },
+};</code></pre>
+
+<p>
+In contrast to the configuration used for importing, this configuration explicitly enables <i>Textual</i> 
+mode. This mode surrounds each value of type string by double quotes.
+</p>
+<p>
+Finally, the remaining thing is to perform an export. For this purpose a list of custom entities 
+like this is assumed.
+</p>
+
+<pre><code>List&lt;CsvCustomer&gt; customers = new List&lt;CsvCustomer&gt;
+{
+    new CsvCustomer {
+        LastName     = "Marley",
+        FirstName    = "Bob",
+        ExternalId   = 1001,
+        EntryDate    = new DateTime(2007, 5, 3),
+        SalesAverage = 1234.56m,
+        IsActive     = false,
+        Description  = "Have a short note here." },
+    new CsvCustomer {
+        LastName     = "Monroe",
+        FirstName    = "Marilyn",
+        ExternalId   = 1002,
+        EntryDate    = new DateTime(2008, 6, 5),
+        SalesAverage = 1234.56m,
+        IsActive     = false,
+        Description  = null },
+    new CsvCustomer {
+        LastName     = "Snipes",
+        FirstName    = "Wesley",
+        ExternalId   = 1003,
+        EntryDate    = new DateTime(2009, 7, 6),
+        SalesAverage = 1234.56m,
+        IsActive     = true,
+        Description  = "Have a short note here." },
+    new CsvCustomer {
+        LastName     = "Hurley",
+        FirstName    = "Elizabeth",
+        ExternalId   = 1004,
+        EntryDate    = new DateTime(2005, 8, 8),
+        SalesAverage = 1234.56m,
+        IsActive     = true,
+        Description  = "Have a short note here." },
+};</code></pre>
+
+<p>
+Now, exporting of those data takes place like shown as follows.
+</p>
+
+<pre><code>CsvExporter<CsvCustomer>.Save(customers, filename, settings);
+
+Console.ReadKey();</code></pre>
+
+<p>
+Under the above conditions, the output file would look like this.
+</p>
+
+<pre><code>Surname,Forename,Identifier,Date,Sales,Active,Notes
+"Marley","Bob",1001,2007-05-03T00:00:00,1234.56,nope,"Have a short note here."
+"Monroe","Marilyn",1002,2008-06-05T00:00:00,1234.56,nope,
+"Snipes","Wesley",1003,2009-07-06T00:00:00,1234.56,yeah,"Have a short note here."
+"Hurley","Elizabeth",1004,2005-08-08T00:00:00,1234.56,yeah,"Have a short note here."</code></pre>
+
+<p>
+As already mentioned, it is strictly recommended to surround each call to the <i>CSV Exporter</i> 
+by an appropriated <code>try&hellip;catch</code> block!
+</p>
+
+<h2 id="settings">Settings</h2>
+
+<p>
+The <i>Settings</i> are made by using a library class called <code>CsvSettings</code>. This class 
+provides properties that allow to control the handling of data imports and data exports. Which of 
+these properties is responsible for what, is part of this section.
+</p>
+
+<table>
+<thead>
+<tr><th>Property</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Culture
+</td>
+<td>
+The used culture mainly applies to number conversion. For example using German culture will treat 
+numbers such as 1.234,56 as valid decimals. In contrast to that, using an English culture will treat 
+a number like 1,234.56 as valid decimal value. Default value is current UI culture.
+</td>
+</tr>
+<tr>
+<td>
+Encoding
+</td>
+<td>
+File encoding is relevant for both, importing and exporting CSV data. It describes how data have to be 
+handled during loading as well as during saving. For most cases UTF&#8209;8 file encoding is a good choice. 
+Default value is UTF&#8209;8.
+</td>
+</tr>
+<tr>
+<td>
+Exactly
+</td>
+<td>
+If this mode is enabled, then the column heading as well as the column order must exactly fit the data 
+type definition, but only if <i>Heading</i> mode is enabled as well. Furthermore, exactly treatment also 
+applies to data type conversion. For example, an exceptions is thrown if exactly mode is enabled and one 
+of the imported data items could not be converted. The exactly mode is only relevant for a CSV data import 
+and its default value is false.
+</td>
+</tr>
+<tr>
+<td>
+Heading
+</td>
+<td>
+If this mode is enabled, then the header is written into the output. In this case the header information is 
+taken from the column attributes. In case of a column attribute does not contain header information then the 
+property name is taken as header instead. Otherwise, the header is excluded. Default value is true. 
+</td>
+</tr>
+<tr>
+<td>
+Mappings
+</td>
+<td>
+The mapping is used to interpret values while importing respectively while exporting data. For example, an 
+imported CSV file contains <code>yes</code> and/or <code>no</code> for <i>Boolean</i> values. In such a case 
+the mapping is used to tell the importer that <code>yes</code> means <code>true</code> and of course vice 
+versa <code>no</code> means <code>false</code>. Default value is standard mapping (see below).
+</td>
+</tr>
+<tr>
+<td>
+Separator
+</td>
+<td>
+The separator character is used to determine the split position in each line of a CSV file. Usually a comma is 
+used for this purpose. But because of missing a clear definition there are many CSV files that uses various 
+different characters. Some of the examples are: semicolon, tabulator, colon and sometimes spaces as well. With 
+this property it becomes possible to define the character to be used to split the content of any CSV file. Default 
+value is a comma. 
+</td>
+</tr>
+<tr>
+<td>
+Textual
+</td>
+<td>
+If this mode is enabled, then any textual data types are enclosed in double quotes. This would overwrite the 
+default behavior. Default behavior means that only those textual data types are enclosed in double quotes 
+which contain control characters such as the separator, carriage returns, line feeds, and/or double quotes. 
+The textual mode is only relevant for a CSV data export and its default value is false. 
+</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+The <i>Mappings</i> are used to convert CSV values into its programmable representation. This handling works 
+for both, importing and exporting. The library provides a class called <code>CsvMappings</code> for this purpose. 
+How the value mapping works is part of the following details.
+</p>
+
+<p>
+Consider a CSV file to import that contains values of type <i>Boolean</i>. But those values are not set to 
+<code>true</code> respectively to <code>false</code>. These values using <code>yes</code> and <code>no</code> 
+instead. So, the problem is how to convert <code>yes</code> into <code>true</code> and <code>no</code> into 
+<code>false</code>. The solution, class <code>CsvMappings</code> can do this mapping.
+</p>
+
+<p>
+The following example demonstrates how to configure class <code>CsvMappings</code> to become able to handle 
+a mapping of values <code>yes</code> and <code>no</code>.
+</p>
+
+<pre><code>CsvMappings Mappings = new CsvMappings
+{
+    TrueValues = new List { "yes" },
+    FalseValues = new List { "no" },
+};</code></pre>
+
+<p>
+On the other hand, the same mapping can be applied for exporting CSV data. But instead of using the &ldquo;plural&rdquo; 
+properties, the &ldquo;singular&rdquo; properties are configured. See following example of how to put <code>yes</code> 
+and <code>no</code> into the output file, instead of <code>true</code> and <code>false</code>.
+</p>
+
+<pre><code>CsvMappings Mappings = new CsvMappings
+{
+    TrueValue = "yes",
+    FalseValue = "no",
+};</code></pre>
+
+<p>
+See following overview for more details about the properties of class <code>CsvMappings</code>.
+</p>
+
+<table>
+<thead>
+<tr><th>Property</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>
+TrueValue
+</td>
+<td>
+Modifies the descriptor representing a &ldquo;True&rdquo; value which should occur in an exported CSV 
+file instead of the standard <i>Boolean</i> &ldquo;True&rdquo; value. The default &ldquo;True&rdquo; 
+descriptor is &ldquo;true&rdquo;.
+</td>
+</tr>
+<tr>
+<td>
+FalseValue
+</td>
+<td>
+Modifies the descriptor representing a &ldquo;False&rdquo; value which should occur in an exported CSV 
+file instead of the standard <i>Boolean</i> &ldquo;False&rdquo; value. The default &ldquo;False&rdquo; 
+descriptor is &ldquo;false&rdquo;.
+</td>
+</tr>
+<tr>
+<td>
+NullValue
+</td>
+<td>
+Modifies the descriptor representing a &ldquo;Null&rdquo; value which should occur in an exported CSV 
+file instead of an empty string. The default &ldquo;Null&rdquo; descriptor is &ldquo;empty&rdquo;. 
+</td>
+</tr>
+<tr>
+<td>
+TrueValues
+</td>
+<td>
+Modifies the list of descriptors containing all possible values representing variations of &ldquo;True&rdquo; 
+which may occur in imported CSV files. The default list of &ldquo;True&rdquo; descriptors contain &ldquo;true&rdquo;, 
+&ldquo;1&rdquo;, &ldquo;y&rdquo; and &ldquo;yes&rdquo;.
+</td>
+</tr>
+<tr>
+<td>
+FalseValues
+</td>
+<td>
+Modifies the list of descriptors containing all possible values representing variations of &ldquo;False&rdquo; 
+which may occur in imported CSV files. The default list of &ldquo;False&rdquo; descriptors contain &ldquo;false&rdquo;, 
+&ldquo;0&rdquo;, &ldquo;n&rdquo; and &ldquo;no&rdquo;.
+</td>
+</tr>
+<tr>
+<td>
+NullValues
+</td>
+<td>
+Modifies the list of descriptors containing all possible values representing variations of &ldquo;Null&rdquo; 
+which may occur in imported CSV files. The default list of &ldquo;Null&rdquo; descriptors just contains &ldquo;&lt;null&gt;&rdquo;. 
+</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="limitation">Limitation</h2>
+
+<p>
+There are some limitations (and maybe known issues) when using the <i>Plexdata CSV Parser</i>. Clarifying them is 
+task of this section.
+</p>
+
+<p>
+The header of a CSV file may contain the separator character. In such a case it is strictly recommended to ensure 
+that each header part is enclosed in double quotes that contains the separator. Here an example of what is meant.
+</p>
+
+<pre><code>"Head,er1",Header2,Header3</code></pre>
+
+<p>
+Such a constellation will not cause any trouble if the header is formatted as shown above. But if the header of a 
+CSV file is formatted like shown below, then a problem will occur.
+</p>
+
+<pre><code>"Head,er1","Header2,Header3"</code></pre>
+
+<p>
+In this case the parser will discover only two columns, instead of the wanted three. This will end up in an error and 
+the parser gives up with an exception!
+</p>
+
+</div>
 </body>
-</html>
+</html> 
