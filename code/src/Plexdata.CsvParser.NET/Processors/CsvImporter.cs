@@ -504,7 +504,7 @@ namespace Plexdata.CsvParser.Processors
         /// <remarks>
         /// <para>
         /// Well, standard string split would actually not work for this purpose. 
-        /// For example, one of the exceptions is that strings are splitted at the 
+        /// For example, one of the exceptions is that strings are split at the 
         /// separator, no matter if the separator is inside or outside a string 
         /// that is surrounded by double-quotes. This means that something like 
         /// <i>"Head,er1",Header2,Header3</i> would be split into <i>["Head] [er1"] 

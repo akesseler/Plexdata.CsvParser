@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/akesseler/Plexdata.CsvParser</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial release on NuGet.org.</releaseNotes>
+    <copyright>Copyright 2018 plexdata.de</copyright>
+    <tags>CSV file parser</tags>
+  </metadata>
+</package>

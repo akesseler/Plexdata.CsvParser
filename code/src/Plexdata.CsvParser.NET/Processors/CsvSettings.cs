@@ -275,7 +275,7 @@ namespace Plexdata.CsvParser.Processors
         /// <remarks>
         /// The used culture applies to number conversion as well as to other culture-dependent 
         /// data types. For example using German culture will treat number such as 1.234,56 
-        /// as valid decimals. In contrast to that, using an Enlish culture will treat a 
+        /// as valid decimals. In contrast to that, using an English culture will treat a 
         /// number like 1,234.56 as valid decimal value.
         /// </remarks>
         /// <value>
