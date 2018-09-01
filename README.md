@@ -8,3 +8,6 @@ Finally, it would also be possible (assuming a proper configuration is used) to 
 
 The software has been published under the terms of _MIT License_.
 
+For an introduction see the Docs under [https://akesseler.github.io/Plexdata.CsvParser/](https://akesseler.github.io/Plexdata.CsvParser/).
+
+
