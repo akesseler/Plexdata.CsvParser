@@ -9,12 +9,12 @@ body {
 }
 .navbar {
     height: 100%;
-    width: 180px;
+    width: 165px;
     position: fixed;
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111;
+    background-color: #262626;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -29,7 +29,7 @@ body {
     color: #F1F1F1;
 }
 .content {
-    margin-left: 180px; 
+    margin-left: 165px;
     font-size: 1.4em;
     padding: 10px 50px;
 }
@@ -189,7 +189,7 @@ Here below an example of how such a custom entity class could look like.
 </p>
 
 <pre><code>[CsvDocument]
-class CsvCustomer
+class Customer
 {
     [CsvIgnore]
     public Int32 Id { get; set; }
@@ -246,8 +246,8 @@ by &ldquo;false&rdquo;.
     Culture = CultureInfo.GetCultureInfo("en-US"),
     Mappings = new CsvMappings
     {
-        TrueValues = new List<String> { "yeah" },
-        FalseValues = new List<String> { "nope" },
+        TrueValues = new List&lt;String&gt; { "yeah" },
+        FalseValues = new List&lt;String&gt; { "nope" },
     },
 };</code></pre>
 
@@ -256,9 +256,9 @@ Now, the only remaining thing is to perform the import. This is done by calling 
 together with all necessary parameters. The example below shows exemplarily how to do the file import.
 </p>
 
-<pre><code>IEnumerable<CsvCustomer> result = CsvImporter<CsvCustomer>.Load(filename, settings);
+<pre><code>IEnumerable&lt;Customer&gt; result = CsvImporter&lt;Customer&gt;.Load(filename, settings);
 
-foreach (CsvCustomer current in result)
+foreach (Customer current in result)
 {
     Console.WriteLine(current.ToString());
 }
@@ -276,7 +276,7 @@ to do, a custom entity class should be created. Such a class could look like sho
 </p>
 
 <pre><code>[CsvDocument]
-class CsvCustomer
+class Customer
 {
     [CsvIgnore]
     public Int32 Id { get; set; }
@@ -328,9 +328,9 @@ Finally, the remaining thing is to perform an export. For this purpose a list of
 like this is assumed.
 </p>
 
-<pre><code>List&lt;CsvCustomer&gt; customers = new List&lt;CsvCustomer&gt;
+<pre><code>List&lt;Customer&gt; customers = new List&lt;Customer&gt;
 {
-    new CsvCustomer {
+    new Customer {
         LastName     = "Marley",
         FirstName    = "Bob",
         ExternalId   = 1001,
@@ -338,7 +338,7 @@ like this is assumed.
         SalesAverage = 1234.56m,
         IsActive     = false,
         Description  = "Have a short note here." },
-    new CsvCustomer {
+    new Customer {
         LastName     = "Monroe",
         FirstName    = "Marilyn",
         ExternalId   = 1002,
@@ -346,7 +346,7 @@ like this is assumed.
         SalesAverage = 1234.56m,
         IsActive     = false,
         Description  = null },
-    new CsvCustomer {
+    new Customer {
         LastName     = "Snipes",
         FirstName    = "Wesley",
         ExternalId   = 1003,
@@ -354,7 +354,7 @@ like this is assumed.
         SalesAverage = 1234.56m,
         IsActive     = true,
         Description  = "Have a short note here." },
-    new CsvCustomer {
+    new Customer {
         LastName     = "Hurley",
         FirstName    = "Elizabeth",
         ExternalId   = 1004,
@@ -368,7 +368,7 @@ like this is assumed.
 Now, exporting of those data takes place like shown as follows.
 </p>
 
-<pre><code>CsvExporter<CsvCustomer>.Save(customers, filename, settings);
+<pre><code>CsvExporter&lt;Customer&gt;.Save(customers, filename, settings);
 
 Console.ReadKey();</code></pre>
 
@@ -499,8 +499,8 @@ a mapping of values <code>yes</code> and <code>no</code>.
 
 <pre><code>CsvMappings Mappings = new CsvMappings
 {
-    TrueValues = new List { "yes" },
-    FalseValues = new List { "no" },
+    TrueValues = new List&lt;String&gt; { "yeah" },
+    FalseValues = new List&lt;String&gt; { "nope" },
 };</code></pre>
 
 <p>
@@ -588,12 +588,11 @@ which may occur in imported CSV files. The default list of &ldquo;Null&rdquo; de
 <h2 id="limitation">Limitation</h2>
 
 <p>
-There are some limitations (and maybe known issues) when using the <i>Plexdata CSV Parser</i>. Clarifying them is 
-task of this section.
+There are some limitations when using the <i>Plexdata CSV Parser</i>. Clarifying them is task of this section.
 </p>
 
 <p>
-The header of a CSV file may contain the separator character. In such a case it is strictly recommended to ensure 
+The content of a CSV file header may contain the separator character. In such a case it is strictly recommended to ensure
 that each header part is enclosed in double quotes that contains the separator. Here an example of what is meant.
 </p>
 
