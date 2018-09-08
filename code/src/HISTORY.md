@@ -1,6 +1,13 @@
 
 
 
+**1.0.0.3**
+
+- Adding "?raw=true" to the icon URL to fit NuGet requirements.
+- Increasing the version number.
+- Package release on nuget.org
+- Release file uploaded on github.com
+
 **1.0.0.2**
 
 - Upgrading to *.NET Framework v4.7.2*.

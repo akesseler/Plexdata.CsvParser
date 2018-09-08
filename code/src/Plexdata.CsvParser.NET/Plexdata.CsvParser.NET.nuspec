@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <licenseUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/akesseler/Plexdata.CsvParser</projectUrl>
-    <iconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png</iconUrl>
+    <iconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Upgrade to .NET Framework version v4.7.2.</releaseNotes>
