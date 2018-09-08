@@ -8,10 +8,11 @@
     <owners>$author$</owners>
     <licenseUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/akesseler/Plexdata.CsvParser</projectUrl>
+    <iconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial release on NuGet.org.</releaseNotes>
-    <copyright>Copyright 2018 plexdata.de</copyright>
+    <releaseNotes>Upgrade to .NET Framework version v4.7.2.</releaseNotes>
+    <copyright>Copyright © 2018 - plexdata.de</copyright>
     <tags>CSV file parser</tags>
   </metadata>
 </package>
