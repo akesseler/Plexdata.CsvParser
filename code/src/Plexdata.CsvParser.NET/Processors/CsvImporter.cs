@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+using Plexdata.CsvParser.Helpers;
 using Plexdata.CsvParser.Internals;
 using System;
 using System.Collections.Generic;
@@ -144,14 +145,14 @@ namespace Plexdata.CsvParser.Processors
         /// <remarks>
         /// This method performes loading of data with default settings. Using 
         /// default settings means that the header is processed, but only if one 
-        /// exist. Further, The information for header processing is taken from 
+        /// exist. Further, the information for header processing is taken from 
         /// column attributes or from property names.
         /// </remarks>
         /// <param name="filename">
         /// The fully qualified path of the input file.
         /// </param>
         /// <returns>
-        /// A list of classes of  <typeparamref name="TInstance"/>.
+        /// A list of classes of <typeparamref name="TInstance"/>.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// This exception is thrown in case of an invalid file name.
@@ -311,7 +312,7 @@ namespace Plexdata.CsvParser.Processors
 
                 Int32 index = 0;
 
-                List<String> cells = CsvImporter<TInstance>.SplitIntoCells(lines[index], separator);
+                List<String> cells = ProcessHelper.SplitIntoCells(lines[index], separator);
 
                 if (CsvImporter<TInstance>.IsHeaderLine(cells, items))
                 {
@@ -391,7 +392,7 @@ namespace Plexdata.CsvParser.Processors
         {
             TInstance result = CsvImporter<TInstance>.Construct(); // throws
 
-            List<String> values = CsvImporter<TInstance>.SplitIntoCells(line, separator);
+            List<String> values = ProcessHelper.SplitIntoCells(line, separator);
 
             for (Int32 index = 0; index < values.Count; index++)
             {
@@ -445,7 +446,7 @@ namespace Plexdata.CsvParser.Processors
         {
             for (Int32 line = 0; line < lines.Count; line++)
             {
-                List<String> cells = CsvImporter<TInstance>.SplitIntoCells(lines[line], separator);
+                List<String> cells = ProcessHelper.SplitIntoCells(lines[line], separator);
 
                 if (cells.Count != items.Count && (exactly || cells.Count < items.Count))
                 {
@@ -495,87 +496,6 @@ namespace Plexdata.CsvParser.Processors
                         $"to the expected header name \"{CsvImporter<TInstance>.GetHeaderName(descriptor)}.\"");
                 }
             }
-        }
-
-        /// <summary>
-        /// This method splits given <paramref name="line"/> into its parts using 
-        /// given <paramref name="separator"/>.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Well, standard string split would actually not work for this purpose. 
-        /// For example, one of the exceptions is that strings are split at the 
-        /// separator, no matter if the separator is inside or outside a string 
-        /// that is surrounded by double-quotes. This means that something like 
-        /// <i>"Head,er1",Header2,Header3</i> would be split into <i>["Head] [er1"] 
-        /// [Header2] [Header3]</i>.
-        /// </para>
-        /// <para>
-        /// This method puts respect on that by skipping everything which is enclosed 
-        /// double-quotes. Taking the example from above would result in <i>[Head,er1] 
-        /// [Header2] [Header3]</i> which seems to be the wanted result. Further, 
-        /// leaving out some of the double-quotes would also work in certain scale. 
-        /// But be always aware, a constellation like <i>"Head,er1","Header2,Header3"</i> 
-        /// would end up in <i>[Head,er1] [Header2,Header3]</i>!
-        /// </para>
-        /// </remarks>
-        /// <param name="line">
-        /// The line to be split.
-        /// </param>
-        /// <param name="separator">
-        /// The separator at which to split.
-        /// </param>
-        /// <returns>
-        /// A list of strings representing all parts of given line.
-        /// </returns>
-        private static List<String> SplitIntoCells(String line, Char separator)
-        {
-            List<String> result = new List<String>();
-
-            if (!String.IsNullOrWhiteSpace(line))
-            {
-                const Char DQ = '"';
-
-                Char[] clear = new Char[] { DQ };
-
-                Int32 offset = 0;
-                Int32 length = 0;
-                Char[] buffer = line.ToArray();
-
-                for (Int32 index = 0; index < buffer.Length; index++)
-                {
-                    if (buffer[index] == DQ)
-                    {
-                        do
-                        {
-                            index++;
-                        }
-                        while (index < buffer.Length && buffer[index] != DQ);
-
-                        if (index >= buffer.Length)
-                        {
-                            index = buffer.Length - 1;
-                        }
-                    }
-
-                    if (buffer[index] == separator)
-                    {
-                        length = index - offset;
-
-                        result.Add(line.Substring(offset, length).Trim().Trim(clear));
-
-                        offset = index + 1;
-                        length = 0;
-                    }
-                }
-
-                if (offset < buffer.Length)
-                {
-                    result.Add(line.Substring(offset).Trim().Trim(clear));
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -705,7 +625,7 @@ namespace Plexdata.CsvParser.Processors
 
             try
             {
-                result = ctor.Invoke(new object[] { }) as TInstance;
+                result = ctor.Invoke(new Object[] { }) as TInstance;
             }
             catch (Exception exception)
             {

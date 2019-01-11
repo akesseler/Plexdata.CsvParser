@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,38 +81,38 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
         private class PropertyInfoTest : PropertyInfo
         {
-            internal string name = null;
+            internal String name = null;
 
             public override Type PropertyType => throw new NotImplementedException();
 
             public override PropertyAttributes Attributes => throw new NotImplementedException();
 
-            public override bool CanRead => throw new NotImplementedException();
+            public override Boolean CanRead => throw new NotImplementedException();
 
-            public override bool CanWrite => throw new NotImplementedException();
+            public override Boolean CanWrite => throw new NotImplementedException();
 
-            public override string Name { get { return name; } }
+            public override String Name { get { return name; } }
 
             public override Type DeclaringType => throw new NotImplementedException();
 
             public override Type ReflectedType => throw new NotImplementedException();
 
-            public override MethodInfo[] GetAccessors(bool nonPublic)
+            public override MethodInfo[] GetAccessors(Boolean nonPublic)
             {
                 throw new NotImplementedException();
             }
 
-            public override object[] GetCustomAttributes(bool inherit)
+            public override Object[] GetCustomAttributes(Boolean inherit)
             {
                 throw new NotImplementedException();
             }
 
-            public override object[] GetCustomAttributes(Type attributeType, bool inherit)
+            public override Object[] GetCustomAttributes(Type attributeType, Boolean inherit)
             {
                 throw new NotImplementedException();
             }
 
-            public override MethodInfo GetGetMethod(bool nonPublic)
+            public override MethodInfo GetGetMethod(Boolean nonPublic)
             {
                 throw new NotImplementedException();
             }
@@ -122,22 +122,22 @@ namespace Plexdata.CsvParser.Tests.Attributes
                 throw new NotImplementedException();
             }
 
-            public override MethodInfo GetSetMethod(bool nonPublic)
+            public override MethodInfo GetSetMethod(Boolean nonPublic)
             {
                 throw new NotImplementedException();
             }
 
-            public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture)
+            public override Object GetValue(Object obj, BindingFlags invokeAttr, Binder binder, Object[] index, CultureInfo culture)
             {
                 throw new NotImplementedException();
             }
 
-            public override bool IsDefined(Type attributeType, bool inherit)
+            public override Boolean IsDefined(Type attributeType, Boolean inherit)
             {
                 throw new NotImplementedException();
             }
 
-            public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture)
+            public override void SetValue(Object obj, Object value, BindingFlags invokeAttr, Binder binder, Object[] index, CultureInfo culture)
             {
                 throw new NotImplementedException();
             }

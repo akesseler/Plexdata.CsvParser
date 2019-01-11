@@ -1,6 +1,14 @@
 
 
 
+**1.0.1.0**
+
+- Adding functionality of reading CSV content into a two-dimensional matrix.
+- Adding a Sandcastle help project to generate API docs for the Wiki.
+- Changing of the copyright year in all files into 2019.
+- Bug fixes for double quote escaping in strings.
+- Increasing the version number.
+
 **1.0.0.3**
 
 - Adding "?raw=true" to the icon URL to fit NuGet requirements.

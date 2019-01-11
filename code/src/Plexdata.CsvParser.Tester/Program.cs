@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ namespace Plexdata.CsvParser.Tester
             public String Description { get; set; }
         }
         
-        static void Main(string[] args)
+        static void Main(String[] args)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace Plexdata.CsvParser.Tester
             public String Description { get; set; }
         }
 
-        static void Main(string[] args)
+        static void Main(String[] args)
         {
             try
             {
@@ -192,7 +192,44 @@ namespace Plexdata.CsvParser.Tester
         }
         */
 
-        static void Main(string[] args)
+        /* Read CSV file
+        static void Main(String[] args)
+        {
+            // Source file could contain this content:
+            // Name;               Notes
+            // "Marley, Bob";      "Jamaican singer-songwriter"
+            // "Monroe, Marilyn";  "American actress";          "model and singer"
+            // "Snipes, Wesley";   "American actor";            "director, film producer"; "martial artist"
+            // "Hurley, Elizabeth" 
+
+            CsvSettings settings = new CsvSettings() { Heading = true, Separator = ColumnSeparators.SemicolonSeparator };
+            CsvContainer container = CsvReader.Read(filename, settings);
+
+            String col0row1 = container.GetValue<String>(0, 1) as String; // Marley, Bob
+            String col0row2 = container.GetValue<String>(0, 2) as String; // Monroe, Marilyn
+            String col0row3 = container.GetValue<String>(0, 3) as String; // Snipes, Wesley
+            String col0row4 = container.GetValue<String>(0, 4) as String; // Hurley, Elizabeth
+
+            String col1row1 = container.GetValue<String>(1, 1) as String; // Jamaican singer-songwriter
+            String col1row2 = container.GetValue<String>(1, 2) as String; // American actress
+            String col1row3 = container.GetValue<String>(1, 3) as String; // American actor
+            String col1row4 = container.GetValue<String>(1, 4) as String; // null
+
+            String col2row1 = container.GetValue<String>(2, 1) as String; // null
+            String col2row2 = container.GetValue<String>(2, 2) as String; // model and singer
+            String col2row3 = container.GetValue<String>(2, 3) as String; // director, film producer
+            String col2row4 = container.GetValue<String>(2, 4) as String; // null
+
+            String col3row1 = container.GetValue<String>(3, 1) as String; // null
+            String col3row2 = container.GetValue<String>(3, 2) as String; // null
+            String col3row3 = container.GetValue<String>(3, 3) as String; // martial artist
+            String col3row4 = container.GetValue<String>(3, 4) as String; // null
+
+            Console.ReadKey();
+        }
+        */
+
+        static void Main(String[] args)
         {
             Console.WriteLine("Do something useful...");
             Console.ReadKey();

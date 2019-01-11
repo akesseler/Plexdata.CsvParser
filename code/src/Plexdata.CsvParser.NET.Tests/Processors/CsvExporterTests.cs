@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -207,7 +207,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             String actual = Encoding.UTF8.GetString(stream.ToArray());
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -224,7 +224,6 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             MemoryStream stream = new MemoryStream();
             CsvSettings settings = new CsvSettings() { Encoding = Encoding.ASCII, Heading = true, Separator = '#', Culture = CultureInfo.GetCultureInfo("de-DE"), };
-
             List<TestClass1> values = new List<TestClass1>()
             {
                 new TestClass1() { Label = "Label-1", Enabled = false, Number = 100, Currency = 1.234m, },
@@ -239,7 +238,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             String actual = Encoding.ASCII.GetString(stream.ToArray());
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -256,7 +255,6 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             MemoryStream stream = new MemoryStream();
             CsvSettings settings = new CsvSettings();
-
             List<TestClass1> values = new List<TestClass1>()
             {
                 new TestClass1() { Label = null,      Enabled = false, Number = 100, Currency = 1.234m, },
@@ -271,7 +269,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             String actual = Encoding.UTF8.GetString(stream.ToArray());
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -288,7 +286,6 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             MemoryStream stream = new MemoryStream();
             CsvSettings settings = new CsvSettings() { Encoding = Encoding.ASCII, Heading = true, Separator = '#', Culture = CultureInfo.GetCultureInfo("de-DE"), };
-
             List<TestClass1> values = new List<TestClass1>()
             {
                 new TestClass1() { Label = null,      Enabled = false, Number = 100, Currency = 1.234m, },
@@ -303,7 +300,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             String actual = Encoding.ASCII.GetString(stream.ToArray());
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -320,7 +317,6 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             MemoryStream stream = new MemoryStream();
             CsvSettings settings = new CsvSettings() { Encoding = Encoding.UTF32, Heading = true, Separator = ',', Culture = CultureInfo.GetCultureInfo("en-US"), };
-
             List<TestClass1> values = new List<TestClass1>()
             {
                 new TestClass1() { Label = "Label-1", Enabled = false, Number = 100, Currency = 1.234m, },
@@ -335,7 +331,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             String actual = Encoding.UTF32.GetString(stream.ToArray());
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -352,7 +348,6 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             MemoryStream stream = new MemoryStream();
             CsvSettings settings = new CsvSettings() { Mappings = new CsvMappings() { TrueValue = "Yeah", FalseValue = "Nope", NullValue = "Void" }, };
-
             List<TestClass1> values = new List<TestClass1>()
             {
                 new TestClass1() { Label = null,      Enabled = false, Number = 100, Currency = 1.234m, },
@@ -367,7 +362,38 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             String actual = Encoding.UTF8.GetString(stream.ToArray());
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void Save_UsingAsciiForDoubleQuoteEscaping_ResultIsAsExpected()
+        {
+            String expected =
+                "Label,Text\r\n" +
+                "\"Label \"\"1\"\"\",\"\"\"Double Quotes\"\" included\"\r\n" +
+                "\"Label \"\"2\"\"\",Double Quotes not included\r\n" +
+                "\"Label \"\"3\"\"\",\"\"\"Double\"\" Quotes included\"\r\n" +
+                "\"Label \"\"4\"\"\",Double Quotes not included\r\n" +
+                "\"Label \"\"5\"\"\",\"Double \"\"Quotes\"\" included\"\r\n" +
+                "\"Label \"\"6\"\"\",Double Quotes not included\r\n";
+
+            MemoryStream stream = new MemoryStream();
+            CsvSettings settings = new CsvSettings() { Encoding = Encoding.ASCII };
+            List<TestClass2> values = new List<TestClass2>()
+            {
+                new TestClass2() { Label = "Label \"1\"", Text = "\"Double Quotes\" included" },
+                new TestClass2() { Label = "Label \"2\"", Text = "Double Quotes not included" },
+                new TestClass2() { Label = "Label \"3\"", Text = "\"Double\" Quotes included" },
+                new TestClass2() { Label = "Label \"4\"", Text = "Double Quotes not included" },
+                new TestClass2() { Label = "Label \"5\"", Text = "Double \"Quotes\" included" },
+                new TestClass2() { Label = "Label \"6\"", Text = "Double Quotes not included" },
+            };
+
+            CsvExporter<TestClass2>.Save(values, stream, settings);
+
+            String actual = Encoding.UTF8.GetString(stream.ToArray());
+
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
@@ -435,7 +461,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
                 actual = settings.Encoding.GetString(stream.ToArray());
             }
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [CsvDocument]
@@ -452,6 +478,16 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
             [CsvColumn]
             public Decimal Currency { get; set; }
+        }
+
+        [CsvDocument]
+        private class TestClass2 : TestClassBase
+        {
+            [CsvColumn]
+            public String Label { get; set; }
+
+            [CsvColumn]
+            public String Text { get; set; }
         }
 
         [CsvDocument]
