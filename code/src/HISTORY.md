@@ -8,6 +8,9 @@
 - Changing of the copyright year in all files into 2019.
 - Bug fixes for double quote escaping in strings.
 - Increasing the version number.
+- Publishing generated API docs as Wiki.
+- Package release on nuget.org
+- Release files uploaded on github.com
 
 **1.0.0.3**
 

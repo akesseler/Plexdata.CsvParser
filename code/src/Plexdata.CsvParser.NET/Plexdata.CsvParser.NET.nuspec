@@ -11,7 +11,7 @@
     <iconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Upgrade to .NET Framework version v4.7.2.</releaseNotes>
+    <releaseNotes>Bug fixing on handling of double-quotes and introduction of a plain-text CSV reader.</releaseNotes>
     <copyright>Copyright © 2019 - plexdata.de</copyright>
     <tags>CSV file parser</tags>
   </metadata>
