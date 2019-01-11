@@ -14,16 +14,16 @@
     <Name>Documentation</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
-    <OutputPath>chm\</OutputPath>
+    <OutputPath>api\</OutputPath>
     <HtmlHelpName>Plexdata.CsvParser.NET</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\src\Plexdata.CsvParser.NET\bin\Release\Plexdata.CsvParser.NET.dll" />
       <DocumentationSource sourceFile="..\src\Plexdata.CsvParser.NET\bin\Release\Plexdata.CsvParser.NET.xml" />
     </DocumentationSources>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpFileFormat>Markdown</HelpFileFormat>
     <SyntaxFilters>C#</SyntaxFilters>
-    <PresentationStyle>VS2013</PresentationStyle>
+    <PresentationStyle>Markdown</PresentationStyle>
     <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>False</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>

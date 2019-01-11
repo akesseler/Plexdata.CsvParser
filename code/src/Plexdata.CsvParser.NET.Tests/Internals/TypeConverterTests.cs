@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -783,7 +783,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         }
 
-        private static Object[] PositiveDateTimeTestCases = new TestCaseItem[]
+        private static readonly Object[] PositiveDateTimeTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: false, Nullable: false, Expected: max-date-time",
@@ -854,7 +854,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] NegativeDateTimeTestCases = new TestCaseItem[]
+        private static readonly Object[] NegativeDateTimeTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: true, Nullable: false, Expected: FormatException",
@@ -883,7 +883,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] PositiveDecimalTestCases = new TestCaseItem[]
+        private static readonly Object[] PositiveDecimalTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: false, Nullable: false, Expected: max-decimal",
@@ -966,7 +966,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] NegativeDecimalTestCases = new TestCaseItem[]
+        private static readonly Object[] NegativeDecimalTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: true, Nullable: false, Expected: FormatException",
@@ -995,7 +995,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] PositiveDoubleTestCases = new TestCaseItem[]
+        private static readonly Object[] PositiveDoubleTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: false, Nullable: false, Expected: max-double",
@@ -1078,7 +1078,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] NegativeDoubleTestCases = new TestCaseItem[]
+        private static readonly Object[] NegativeDoubleTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: true, Nullable: false, Expected: FormatException",
@@ -1107,7 +1107,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] PositiveSingleTestCases = new TestCaseItem[]
+        private static readonly Object[] PositiveSingleTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: false, Nullable: false, Expected: max-single",
@@ -1190,7 +1190,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] NegativeSingleTestCases = new TestCaseItem[]
+        private static readonly Object[] NegativeSingleTestCases = new TestCaseItem[]
         {
             new TestCaseItem {
                 TestName = "Value: null, Exactly: true, Nullable: false, Expected: FormatException",
@@ -1236,7 +1236,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         }
 
-        private static Object[] GetTrueMappingsTestCases = new TestCaseMapping[]
+        private static readonly Object[] GetTrueMappingsTestCases = new TestCaseMapping[]
         {
             new TestCaseMapping {
                 TestName = "Mapping: null, Expected: default-true-values",
@@ -1261,7 +1261,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] GetFalseMappingsTestCases = new TestCaseMapping[]
+        private static readonly Object[] GetFalseMappingsTestCases = new TestCaseMapping[]
         {
             new TestCaseMapping {
                 TestName = "Mapping: null, Expected: default-false-values",
@@ -1286,7 +1286,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] GetNullMappingsTestCases = new TestCaseMapping[]
+        private static readonly Object[] GetNullMappingsTestCases = new TestCaseMapping[]
         {
             new TestCaseMapping {
                 TestName = "Mapping: null, Expected: default-null-values",
@@ -1311,7 +1311,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] IsTrueStringTestCases = new TestCaseMapping[]
+        private static readonly Object[] IsTrueStringTestCases = new TestCaseMapping[]
         {
             new TestCaseMapping {
                 TestName = "Value: null, Mapping: default, Expected: false",
@@ -1346,7 +1346,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] IsFalseStringTestCases = new TestCaseMapping[]
+        private static readonly Object[] IsFalseStringTestCases = new TestCaseMapping[]
         {
             new TestCaseMapping {
                 TestName = "Value: null, Mapping: default, Expected: false",
@@ -1381,7 +1381,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
             }
         };
 
-        private static Object[] IsNullStringTestCases = new TestCaseMapping[]
+        private static readonly Object[] IsNullStringTestCases = new TestCaseMapping[]
         {
             new TestCaseMapping {
                 TestName = "Value: null, Mapping: default, Expected: false",
@@ -1413,7 +1413,7 @@ namespace Plexdata.CsvParser.Tests.Attributes
 
         private Object ExecutePrivateStaticMethod(String name, Object[] parameters)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (String.IsNullOrWhiteSpace(name))
             {
                 Assert.Fail($"Method name {name} cannot be null or whitespace.");
             }

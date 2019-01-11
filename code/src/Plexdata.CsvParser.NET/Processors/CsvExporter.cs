@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -606,6 +606,11 @@ namespace Plexdata.CsvParser.Processors
 
             if (quoting || value.IndexOfAny(new Char[] { separator, CR, LF, DQ }) >= 0)
             {
+                if (value.IndexOf(DQ) >= 0)
+                {
+                    value = value.Replace($"{DQ}", $"{DQ}{DQ}");
+                }
+
                 return $"{DQ}{value}{DQ}{separator}";
             }
             else

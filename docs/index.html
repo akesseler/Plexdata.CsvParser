@@ -70,8 +70,10 @@ tbody tr:nth-child(odd){
   <a href="#overview">Overview</a>
   <a href="#licensing">Licensing</a>
   <a href="#installation">Installation</a>
+  <a href="#escaping">Escaping</a>
   <a href="#importing">Importing</a>
   <a href="#exporting">Exporting</a>
+  <a href="#reading">Reading</a>
   <a href="#settings">Settings</a>
   <a href="#limitation">Limitation</a>
 </div>
@@ -107,7 +109,7 @@ The software has been published under the terms of
 <h3>MIT License</h3>
 
 <p>
-Copyright &copy; 2018 <a target="_blank" href="http://www.plexdata.de/">plexdata.de</a>
+Copyright &copy; 2019 <a target="_blank" href="http://www.plexdata.de/">plexdata.de</a>
 </p>
 <p>
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
@@ -164,6 +166,30 @@ Confirm the dialog box and that&rsquo;s it.
 Additionally, all releases can be downloaded from <i>GitHub</i>. Please visit page 
 <a target="_blank" href="https://github.com/akesseler/Plexdata.CsvParser/releases">Plexdata CSV Parser</a> 
 to find all available versions.
+</p>
+
+<h2 id="escaping">Escaping</h2>
+
+<p>
+The current library version also supports escaping of double&#8209;quotes according to the rules of RFC 4180. 
+This mean for example that values which contain a double&#8209;quote inside their strings do no longer end at 
+this double&#8209;quote. Consider the following CSV content for an example what is actually meant.
+</p>
+
+<pre><code>Name,                Notes
+"Marley, Bob",       "Having an ""escaped"" double quote in here."
+"Hurley, Elizabeth", "Having another \"escaped\" double quote in here."</code></pre>
+
+<p>
+As shown in the example above, the first data row contains <code>""escaped""</code>, which actually represents 
+the double&#8209;quote escaping according to the RFC. The second data line instead contains <code>\"escaped\"</code>. 
+This kind of escaping represents the default character escaping which is usually applied in strings. No matter 
+which of these variations is used, the <i>CSV Importer</i> is able to process both of them.
+</p>
+
+<p>
+In contrast to that, the <i>CSV Exporter</i> will always replace each double&#8209;quote inside a string value 
+into two double&#8209;quotes. This is exactly the behavior which the RFC 4180 describes.
 </p>
 
 <h2 id="importing">Importing</h2>
@@ -366,6 +392,62 @@ Under the above conditions, the output file would look like this.
 <p>
 As already mentioned, it is strictly recommended to surround each call to the <i>CSV Exporter</i> 
 by an appropriated <code>try&hellip;catch</code> block!
+</p>
+
+<h2 id="reading">Reading</h2>
+
+<p>
+Another feature in the current version is the possibility to read a CSV content into some kind 
+of &ldquo;plain&rdquo; structure. This plain structure in turn allows an access to each cell 
+independently.
+</p>
+
+<p>
+With this in mind, the <i>CSV Reader</i> allows processing of CSV content that either has more 
+than the expected number of cells in a particular line or vice versa that has fewer cells. See 
+code snippet below to get an impression about what is meant in detail.
+</p>
+
+<pre><code>// Source file could contain this content:
+// Name;               Notes
+// "Marley, Bob";      "Jamaican singer-songwriter"
+// "Monroe, Marilyn";  "American actress";          "model and singer"
+// "Snipes, Wesley";   "American actor";            "director, film producer"; "martial artist"
+// "Hurley, Elizabeth" 
+
+CsvSettings settings = new CsvSettings() { Heading = true, Separator = ColumnSeparators.SemicolonSeparator };
+CsvContainer container = CsvReader.Read(filename, settings);
+
+String col0row1 = container.GetValue&lt;String&gt;(0, 1) as String; // Marley, Bob
+String col0row2 = container.GetValue&lt;String&gt;(0, 2) as String; // Monroe, Marilyn
+String col0row3 = container.GetValue&lt;String&gt;(0, 3) as String; // Snipes, Wesley
+String col0row4 = container.GetValue&lt;String&gt;(0, 4) as String; // Hurley, Elizabeth
+
+String col1row1 = container.GetValue&lt;String&gt;(1, 1) as String; // Jamaican singer-songwriter
+String col1row2 = container.GetValue&lt;String&gt;(1, 2) as String; // American actress
+String col1row3 = container.GetValue&lt;String&gt;(1, 3) as String; // American actor
+String col1row4 = container.GetValue&lt;String&gt;(1, 4) as String; // null
+
+String col2row1 = container.GetValue&lt;String&gt;(2, 1) as String; // null
+String col2row2 = container.GetValue&lt;String&gt;(2, 2) as String; // model and singer
+String col2row3 = container.GetValue&lt;String&gt;(2, 3) as String; // director, film producer
+String col2row4 = container.GetValue&lt;String&gt;(2, 4) as String; // null
+
+String col3row1 = container.GetValue&lt;String&gt;(3, 1) as String; // null
+String col3row2 = container.GetValue&lt;String&gt;(3, 2) as String; // null
+String col3row3 = container.GetValue&lt;String&gt;(3, 3) as String; // martial artist
+String col3row4 = container.GetValue&lt;String&gt;(3, 4) as String; // null</code></pre>
+
+<p>
+As shown above, the example CSV file contains just two columns for the header. But in line 
+three the file contains exactly three columns. On the other hand, four columns are available 
+in line four. In contrast to that, line five contains just one single column.
+</p>
+
+<p>
+Another detail to mention is that the second value of the call of method <code>GetValue()</code> 
+starts at one. This is because of the CSV file contains a header at line zero. Therefore, 
+accessing the data cells must start at line one.
 </p>
 
 <h2 id="settings">Settings</h2>

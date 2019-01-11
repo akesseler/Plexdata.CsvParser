@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2018 plexdata.de
+ * Copyright (c) 2019 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -286,6 +286,8 @@ namespace Plexdata.CsvParser.Tests.Processors
             Assert.AreEqual(expected, actual);
         }
 
+        #region Test helper classes
+
         [CsvDocument]
         private class TestClass1 : TestClassBase
         {
@@ -353,7 +355,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             [CsvColumn]
             public Decimal Currency { get; set; }
 
-            public override int GetHashCode()
+            public override Int32 GetHashCode()
             {
                 StringBuilder builder = new StringBuilder(512);
                 builder.Append(this.Label);
@@ -363,7 +365,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 return builder.ToString().GetHashCode();
             }
 
-            public override bool Equals(Object other)
+            public override Boolean Equals(Object other)
             {
                 if (other is TestClass4)
                 {
@@ -423,7 +425,9 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        #region Test helper
+        #endregion
+
+        #region Test helper methods
 
         private void CleanUp(Stream stream, String filename)
         {

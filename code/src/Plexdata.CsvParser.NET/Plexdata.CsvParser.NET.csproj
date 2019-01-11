@@ -48,19 +48,23 @@
     <Compile Include="Attributes\CsvDocumentAttribute.cs" />
     <Compile Include="Attributes\CsvIgnoreAttribute.cs" />
     <Compile Include="Constants\ColumnSeparators.cs" />
+    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="Internals\ItemDescriptor.cs" />
     <Compile Include="Internals\TypeConverter.cs" />
     <Compile Include="Internals\TypeDescriptor.cs" />
     <Compile Include="Internals\TypeProcessor.cs" />
+    <Compile Include="Processors\CsvContainer.cs" />
     <Compile Include="Processors\CsvExporter.cs" />
     <Compile Include="Processors\CsvImporter.cs" />
     <Compile Include="Processors\CsvMappings.cs" />
+    <Compile Include="Processors\CsvReader.cs" />
     <Compile Include="Processors\CsvSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Plexdata.CsvParser.NET.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)post-build.cmd" "$(SolutionDir)..\hlp\" $(ConfigurationName) "$(SolutionDir)..\hlp\chm\*.chm"</PostBuildEvent>

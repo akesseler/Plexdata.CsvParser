@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Upgrade to .NET Framework version v4.7.2.</releaseNotes>
-    <copyright>Copyright © 2018 - plexdata.de</copyright>
+    <copyright>Copyright © 2019 - plexdata.de</copyright>
     <tags>CSV file parser</tags>
   </metadata>
 </package>

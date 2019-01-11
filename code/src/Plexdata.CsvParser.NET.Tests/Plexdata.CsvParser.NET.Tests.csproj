@@ -53,16 +53,22 @@
     <Compile Include="Attributes\CsvDocumentAttributeTests.cs" />
     <Compile Include="Attributes\CsvIgnoreAttributeTests.cs" />
     <Compile Include="Constants\ColumnSeparatorsTests.cs" />
+    <Compile Include="Helpers\ProcessHelperTests.cs" />
     <Compile Include="Internals\ItemDescriptorTests.cs" />
     <Compile Include="Internals\TypeConverterTests.cs" />
     <Compile Include="Internals\TypeDescriptorTests.cs" />
     <Compile Include="Internals\TypeProcessorTests.cs" />
+    <Compile Include="Processors\CsvContainerTests.cs" />
     <Compile Include="Processors\CsvExporterTests.cs" />
     <Compile Include="Processors\CsvImporterTests.cs" />
     <Compile Include="Processors\CsvMappingsTests.cs" />
+    <Compile Include="Processors\CsvReaderTests.cs" />
     <Compile Include="Processors\CsvSettingsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plexdata.CsvParser.NET\Plexdata.CsvParser.NET.csproj">
@@ -70,10 +76,6 @@
       <Name>Plexdata.CsvParser.NET</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
