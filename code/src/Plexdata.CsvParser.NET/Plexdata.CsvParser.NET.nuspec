@@ -6,7 +6,7 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <license type="expression">MIT</license>
+    <licenseUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/akesseler/Plexdata.CsvParser</projectUrl>
     <iconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
