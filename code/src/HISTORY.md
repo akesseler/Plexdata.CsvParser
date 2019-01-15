@@ -1,5 +1,14 @@
 
 
+**1.0.2**
+
+- Adding functionality of writing CSV content from a two-dimensional matrix.
+- Private methods from exporter has been made accessible internally.
+- Some minor fixes inside the documentation.
+- Increasing the version number.
+- Publishing generated API docs as Wiki.
+- Package release on nuget.org
+- Release files uploaded on github.com
 
 **1.0.1.0**
 

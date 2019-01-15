@@ -74,6 +74,7 @@ tbody tr:nth-child(odd){
   <a href="#importing">Importing</a>
   <a href="#exporting">Exporting</a>
   <a href="#reading">Reading</a>
+  <a href="#writing">Writing</a>
   <a href="#settings">Settings</a>
   <a href="#limitation">Limitation</a>
 </div>
@@ -98,6 +99,13 @@ be used either together with the importer or together with the exporter to proce
 Finally, it would also be possible (assuming a proper configuration is used) to write a CSV output 
 according to the rules of RFC 4180. For more information about RFC 4180 please visit the web&#8209;site 
 under <a target="_blank" href="https://www.ietf.org/rfc/rfc4180.txt">https://www.ietf.org/rfc/rfc4180.txt</a>.
+</p>
+
+<h3>Documentation</h3>
+
+<p>
+The full API documentation as CHM file is part of the release bundle. The online version of this documentation can be 
+found in the project&rsquo;s <a target="_blank" href="https://github.com/akesseler/Plexdata.CsvParser/wiki">Wiki</a>. 
 </p>
 
 <h2 id="licensing">Licensing</h2>
@@ -449,6 +457,42 @@ Another detail to mention is that the second value of the call of method <code>G
 starts at one. This is because of the CSV file contains a header at line zero. Therefore, 
 accessing the data cells must start at line one.
 </p>
+
+<h2 id="writing">Writing</h2>
+
+<p>
+With the current version it becomes possible to write a matrix of objects, which represents a 
+kind of &ldquo;plain&rdquo; CSV content, into a CSV file. This functionality in turn allows to 
+write everything into a CSV file, not matter if the lines contain a flexible number of columns.
+</p>
+
+<p>
+The following code snippet shows how to use the <i>CSV Writer</i> to put a flexible content 
+into a CSV file.
+</p>
+
+<pre><code>List&lt;List&lt;Object&gt;&gt; content = new List&lt;List&lt;Object&gt;&gt;
+{
+    new List&lt;Object&gt; { "Name", "Notes" },
+    new List&lt;Object&gt; { "Marley, Bob", "Jamaican singer-songwriter" },
+    new List&lt;Object&gt; { "Monroe, Marilyn", "American actress", "model and singer" },
+    new List&lt;Object&gt; { "Snipes, Wesley", "American actor", "director, film producer", "martial artist" },
+    new List&lt;Object&gt; { "Hurley, Elizabeth" }
+};
+
+CsvSettings settings = new CsvSettings() { 
+    Heading = true, Textual = true, 
+    Separator = ColumnSeparators.SemicolonSeparator };
+
+CsvWriter.Write(content, filename, settings);</code></pre>
+
+<p>With the above example code in mind, the output file would contain the following content.</p>
+
+<pre><code>Name;Notes
+"Marley, Bob";"Jamaican singer-songwriter"
+"Monroe, Marilyn";"American actress";"model and singer"
+"Snipes, Wesley";"American actor";"director, film producer";"martial artist"
+"Hurley, Elizabeth"</code></pre>
 
 <h2 id="settings">Settings</h2>
 

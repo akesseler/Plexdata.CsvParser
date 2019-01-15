@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+using Plexdata.CsvParser.Helpers;
 using Plexdata.CsvParser.Internals;
 using System;
 using System.Collections.Generic;
@@ -93,7 +94,7 @@ namespace Plexdata.CsvParser.Processors
     ///             public String Description { get; set; }
     ///         }
     /// 
-    ///         static void Main(string[] args)
+    ///         static void Main(String[] args)
     ///         {
     ///             try
     ///             {
@@ -477,15 +478,15 @@ namespace Plexdata.CsvParser.Processors
             {
                 if (setting.Column.IsHeader)
                 {
-                    builder.Append(CsvExporter<TInstance>.ConvertToOutput(setting.Column.Header, separator, textual));
+                    builder.Append(ProcessHelper.ConvertToOutput(setting.Column.Header, separator, textual));
                 }
                 else
                 {
-                    builder.Append(CsvExporter<TInstance>.ConvertToOutput(setting.Origin.Name, separator, textual));
+                    builder.Append(ProcessHelper.ConvertToOutput(setting.Origin.Name, separator, textual));
                 }
             }
 
-            writer.WriteLine(CsvExporter<TInstance>.FixupOutput(builder, separator).ToString());
+            writer.WriteLine(ProcessHelper.FixupOutput(builder, separator).ToString());
         }
 
         /// <summary>
@@ -500,12 +501,14 @@ namespace Plexdata.CsvParser.Processors
         /// <param name="writer">
         /// The stream writer to be used to push data.
         /// </param>
-        /// <param name="separator"></param>
+        /// <param name="separator">
         /// The delimiter to be used to separate each column.
-        /// <param name="textual"></param>
+        /// </param>
+        /// <param name="textual">
         /// The flag indicating how strings have to be handled. If true then all 
         /// string are enclosed in double-quotes. If false then only the necessary 
         /// strings are enclosed in double-quotes.
+        /// </param>
         /// <param name="culture">
         /// The culture to be used for data conversion.
         /// </param>
@@ -523,127 +526,12 @@ namespace Plexdata.CsvParser.Processors
             {
                 foreach (Object value in values)
                 {
-                    String current = CsvExporter<TInstance>.ConvertToString(value, culture, mapping, out Boolean quoting);
-                    builder.Append(CsvExporter<TInstance>.ConvertToOutput(current, separator, (quoting & textual)));
+                    String current = ProcessHelper.ConvertToString(value, culture, mapping, out Boolean quoting);
+                    builder.Append(ProcessHelper.ConvertToOutput(current, separator, (quoting & textual)));
                 }
             }
 
-            writer.WriteLine(CsvExporter<TInstance>.FixupOutput(builder, separator).ToString());
-        }
-
-        /// <summary>
-        /// This method tries to convert an object into its string representation.
-        /// </summary>
-        /// <remarks>
-        /// The <paramref name="quoting"/> out parameter is only true if given 
-        /// value is of type string. Otherwise, this parameter is false.
-        /// </remarks>
-        /// <param name="value">
-        /// The object to get its string representation for.
-        /// </param>
-        /// <param name="culture">
-        /// The culture to be used for data conversion.
-        /// </param>
-        /// <param name="mapping">
-        /// The mapping to be used for value transformation.
-        /// </param>
-        /// <param name="quoting">
-        /// The out parameter that describes if an object value should be surrounded 
-        /// by double-quotes. 
-        /// </param>
-        /// <returns>
-        /// The string representation of given object.
-        /// </returns>
-        private static String ConvertToString(Object value, CultureInfo culture, CsvMappings mapping, out Boolean quoting)
-        {
-            quoting = (value is String);
-            return TypeConverter.IntoString(value, culture, mapping);
-        }
-
-        /// <summary>
-        /// This method converts given value into its output representation.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Keep in mind, the result string is enclosed in double-quotes either if 
-        /// <paramref name="quoting"/> is true or the given <paramref name="value"/> 
-        /// contains at least one of the control character.
-        /// </para>
-        /// <para>
-        /// Control character means in this context that the <paramref name="value"/> 
-        /// contains either a carriage return, or a line feed, or a double-quote, 
-        ///  or most important the separator character itself.
-        /// </para>
-        /// <para>
-        /// Additionally note that not only string could be enclosed by double-quotes.
-        /// Because it could be possible as well that number types will be surrounded 
-        /// by double-quotes. This would be for example the case when a comma separator 
-        /// is used and the given culture is German.
-        /// </para>
-        /// </remarks>
-        /// <param name="value">
-        /// The <paramref name="value"/> string to be transformed.
-        /// </param>
-        /// <param name="separator">
-        /// The separator to be applied at the end.
-        /// </param>
-        /// <param name="quoting">
-        /// The flag that indicates whether double-quotes have to be applied.
-        /// </param>
-        /// <returns>
-        /// A string for the value ready to put it into the CSV output.
-        /// </returns>
-        private static String ConvertToOutput(String value, Char separator, Boolean quoting)
-        {
-            const Char CR = '\r';
-            const Char LF = '\n';
-            const Char DQ = '"';
-
-            if (value == null)
-            {
-                value = String.Empty;
-            }
-
-            if (quoting || value.IndexOfAny(new Char[] { separator, CR, LF, DQ }) >= 0)
-            {
-                if (value.IndexOf(DQ) >= 0)
-                {
-                    value = value.Replace($"{DQ}", $"{DQ}{DQ}");
-                }
-
-                return $"{DQ}{value}{DQ}{separator}";
-            }
-            else
-            {
-                return $"{value}{separator}";
-            }
-        }
-
-        /// <summary>
-        /// This method simply removes the separator from the end of current 
-        /// <paramref name="builder"/> content, but only if exists.
-        /// </summary>
-        /// <remarks>
-        /// As mentioned above, this method tries to remove the column separator 
-        /// from its current end.
-        /// </remarks>
-        /// <param name="builder">
-        /// The builder with content to be fixed.
-        /// </param>
-        /// <param name="separator">
-        /// The separator to be removed, if any.
-        /// </param>
-        /// <returns>
-        /// The cleaned out builder.
-        /// </returns>
-        private static StringBuilder FixupOutput(StringBuilder builder, Char separator)
-        {
-            if (builder != null && builder.Length > 0 && builder[builder.Length - 1] == separator)
-            {
-                builder.Remove(builder.Length - 1, 1);
-            }
-
-            return builder;
+            writer.WriteLine(ProcessHelper.FixupOutput(builder, separator).ToString());
         }
 
         #endregion

@@ -59,6 +59,7 @@
     <Compile Include="Processors\CsvMappings.cs" />
     <Compile Include="Processors\CsvReader.cs" />
     <Compile Include="Processors\CsvSettings.cs" />
+    <Compile Include="Processors\CsvWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
