@@ -36,11 +36,81 @@ namespace Plexdata.CsvParser.Processors
     /// the CSV content.
     /// </summary>
     /// <remarks>
-    /// Actually, this class allows to read all CSV data as some kind of plain text. 
-    /// Such functionally seems to be necessary because sometimes CSV files may contain 
-    /// more or less data items as expected. Therefore, this class should be helpful 
-    /// to process CSV files with dynamic content.
+    /// <para>
+    /// CSV actually means Comma Separated Values. Sometimes it is also called as Character 
+    /// Separated Values. But not matter which name is used, CSV always represents a text file 
+    /// mainly used for data exchange between different system.
+    /// </para>
+    /// <para>
+    /// It would be possible (using a proper configuration) to read a CSV input according to 
+    /// the rules of RFC 4180. For more information about RFC 4180 please visit the web-site under 
+    /// <see href="https://www.ietf.org/rfc/rfc4180.txt">https://www.ietf.org/rfc/rfc4180.txt</see>
+    /// </para>
+    /// <para>
+    /// Actually, this class allows to read all CSV data as some kind of plain text. Such functionally 
+    /// seems to be necessary because sometimes CSV files may contain more or less data items as 
+    /// expected. Therefore, this class should be helpful to process CSV files with dynamic content.
+    /// </para>
     /// </remarks>
+    /// <example>
+    /// This section wants to show a simple but hopefully useful example of how to use the CSV 
+    /// Parser to read data.
+    /// <code>
+    /// using Plexdata.CsvParser.Constants;
+    /// using Plexdata.CsvParser.Processors;
+    /// using System;
+    /// 
+    /// namespace MyCsvReader
+    /// {
+    ///     class Program
+    ///     {
+    ///         static void Main(String[] args)
+    ///         {
+    ///             try
+    ///             {
+    ///                 String filename = @"C:\folder\file.csv";
+    /// 
+    ///                 // Source file could contain this content:
+    ///                 // Name;               Notes
+    ///                 // "Marley, Bob";      "Jamaican singer-songwriter"
+    ///                 // "Monroe, Marilyn";  "American actress";          "model and singer"
+    ///                 // "Snipes, Wesley";   "American actor";            "director, film producer"; "martial artist"
+    ///                 // "Hurley, Elizabeth" 
+    /// 
+    ///                 CsvSettings settings = new CsvSettings() { Heading = true, Separator = ColumnSeparators.SemicolonSeparator };
+    ///                 CsvContainer container = CsvReader.Read(filename, settings);
+    /// 
+    ///                 String col0row1 = container.GetValue&lt;String&gt;(0, 1) as String; // Marley, Bob
+    ///                 String col0row2 = container.GetValue&lt;String&gt;(0, 2) as String; // Monroe, Marilyn
+    ///                 String col0row3 = container.GetValue&lt;String&gt;(0, 3) as String; // Snipes, Wesley
+    ///                 String col0row4 = container.GetValue&lt;String&gt;(0, 4) as String; // Hurley, Elizabeth
+    /// 
+    ///                 String col1row1 = container.GetValue&lt;String&gt;(1, 1) as String; // Jamaican singer-songwriter
+    ///                 String col1row2 = container.GetValue&lt;String&gt;(1, 2) as String; // American actress
+    ///                 String col1row3 = container.GetValue&lt;String&gt;(1, 3) as String; // American actor
+    ///                 String col1row4 = container.GetValue&lt;String&gt;(1, 4) as String; // null
+    /// 
+    ///                 String col2row1 = container.GetValue&lt;String&gt;(2, 1) as String; // null
+    ///                 String col2row2 = container.GetValue&lt;String&gt;(2, 2) as String; // model and singer
+    ///                 String col2row3 = container.GetValue&lt;String&gt;(2, 3) as String; // director, film producer
+    ///                 String col2row4 = container.GetValue&lt;String&gt;(2, 4) as String; // null
+    /// 
+    ///                 String col3row1 = container.GetValue&lt;String&gt;(3, 1) as String; // null
+    ///                 String col3row2 = container.GetValue&lt;String&gt;(3, 2) as String; // null
+    ///                 String col3row3 = container.GetValue&lt;String&gt;(3, 3) as String; // martial artist
+    ///                 String col3row4 = container.GetValue&lt;String&gt;(3, 4) as String; // null
+    /// 
+    ///                 Console.ReadKey();
+    ///             }
+    ///             catch (Exception exception)
+    ///             {
+    ///                 Console.WriteLine(exception);
+    ///             }
+    ///         }
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public static class CsvReader
     {
         #region Public methods

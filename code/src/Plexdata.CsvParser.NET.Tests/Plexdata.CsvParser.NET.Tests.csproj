@@ -64,6 +64,7 @@
     <Compile Include="Processors\CsvMappingsTests.cs" />
     <Compile Include="Processors\CsvReaderTests.cs" />
     <Compile Include="Processors\CsvSettingsTests.cs" />
+    <Compile Include="Processors\CsvWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>

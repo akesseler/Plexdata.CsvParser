@@ -45,7 +45,7 @@ namespace Plexdata.CsvParser.Processors
     /// </para>
     /// <para>
     /// It would be possible (using a proper configuration) to read a CSV input according to 
-    /// the rules of RFC 4180. For more information on RFC 4180 visit the web-site under 
+    /// the rules of RFC 4180. For more information about RFC 4180 please visit the web-site under 
     /// <see href="https://www.ietf.org/rfc/rfc4180.txt">https://www.ietf.org/rfc/rfc4180.txt</see>
     /// </para>
     /// </remarks>
@@ -94,7 +94,7 @@ namespace Plexdata.CsvParser.Processors
     ///             public String Description { get; set; }
     ///         }
     ///     
-    ///         static void Main(string[] args)
+    ///         static void Main(String[] args)
     ///         {
     ///             try
     ///             {
