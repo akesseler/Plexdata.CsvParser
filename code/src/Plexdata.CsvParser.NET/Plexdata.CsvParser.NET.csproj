@@ -1,73 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B889E9F3-AB10-469E-B541-61BE45DC879B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Plexdata.CsvParser</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Plexdata.CsvParser.NET</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <RootNamespace>Plexdata.CsvParser</RootNamespace>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>plexdata.de</Authors>
+    <Company>plexdata.de</Company>
+    <Copyright>Copyright © 2019 - plexdata.de</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/akesseler/Plexdata.CsvParser</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png?raw=true</PackageIconUrl>
+    <Description>This library is a simple CSV file parser. It uses attributes on classes that define which of the properties are used as CSV file columns.</Description>
+    <PackageTags>CSV file parser reader writer importer exporter comma separated value</PackageTags>
+    <PackageReleaseNotes>See project history under https://github.com/akesseler/Plexdata.CsvParser/blob/master/code/src/HISTORY.md</PackageReleaseNotes>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Plexdata.CsvParser.NET.xml</DocumentationFile>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\$(Configuration)</OutputPath>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\$(Configuration)</OutputPath>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Plexdata.CsvParser.NET.xml</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="$(PackageLicenseFile)" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Attributes\CsvColumnAttribute.cs" />
-    <Compile Include="Attributes\CsvDocumentAttribute.cs" />
-    <Compile Include="Attributes\CsvIgnoreAttribute.cs" />
-    <Compile Include="Constants\ColumnSeparators.cs" />
-    <Compile Include="Helpers\ProcessHelper.cs" />
-    <Compile Include="Internals\ItemDescriptor.cs" />
-    <Compile Include="Internals\TypeConverter.cs" />
-    <Compile Include="Internals\TypeDescriptor.cs" />
-    <Compile Include="Internals\TypeProcessor.cs" />
-    <Compile Include="Processors\CsvContainer.cs" />
-    <Compile Include="Processors\CsvExporter.cs" />
-    <Compile Include="Processors\CsvImporter.cs" />
-    <Compile Include="Processors\CsvMappings.cs" />
-    <Compile Include="Processors\CsvReader.cs" />
-    <Compile Include="Processors\CsvSettings.cs" />
-    <Compile Include="Processors\CsvWriter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Folder Include="Summaries\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Plexdata.CsvParser.NET.nuspec" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)post-build.cmd" "$(SolutionDir)..\hlp\" $(ConfigurationName) "$(SolutionDir)..\hlp\chm\*.chm"</PostBuildEvent>
-  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(SolutionDir)post-build.cmd&quot; &quot;$(SolutionDir)..\hlp\&quot; $(ConfigurationName) &quot;$(SolutionDir)..\hlp\help\*.chm&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
+
 </Project>
+
+

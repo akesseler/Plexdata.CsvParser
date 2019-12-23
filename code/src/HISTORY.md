@@ -1,5 +1,15 @@
 
 
+**1.1.0**
+- Package migration from .NET Framework 4.7.2 to .NET Standard 2.0 (**BREAKING CHANGES**).
+- Internal project restructuring.
+- Files to generate help outputs renamed.
+- Namespace summaries moved into project classes.
+- Adding of _Shields_ links.
+- Version number increased.
+- Package release on `nuget.org`.
+- Wiki and release update on _GitHub_.
+
 **1.0.2**
 
 - Adding functionality of writing CSV content from a two-dimensional matrix.

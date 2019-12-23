@@ -24,7 +24,6 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
-using System;
 
 namespace Plexdata.CsvParser.Tests.Attributes
 {

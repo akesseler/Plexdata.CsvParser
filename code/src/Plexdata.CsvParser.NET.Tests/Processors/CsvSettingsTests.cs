@@ -26,7 +26,7 @@ using NUnit.Framework;
 using Plexdata.CsvParser.Processors;
 using System;
 
-namespace Plexdata.CsvParser.Tests.Attributes
+namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
     [TestOf(nameof(CsvSettings))]

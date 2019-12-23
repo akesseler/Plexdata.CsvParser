@@ -22,25 +22,7 @@
  * SOFTWARE.
  */
 
-using NUnit.Framework;
-using Plexdata.CsvParser.Constants;
-using System;
+using System.Runtime.CompilerServices;
 
-namespace Plexdata.CsvParser.Tests.Constants
-{
-    [TestFixture]
-    [TestOf(nameof(ColumnSeparators))]
-    public class ColumnSeparatorsTests
-    {
-        [Test]
-        [TestCase(':', ColumnSeparators.ColonSeparator)]
-        [TestCase(',', ColumnSeparators.CommaSeparator)]
-        [TestCase(';', ColumnSeparators.SemicolonSeparator)]
-        [TestCase('\t', ColumnSeparators.TabulatorSeparator)]
-        [TestCase(',', ColumnSeparators.DefaultSeparator)]
-        public void Verification_ColumnSeparators_ResultAreEqual(Char expected, Char actual)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-    }
-}
+// Make internal classes visible for testing...
+[assembly: InternalsVisibleTo("Plexdata.CsvParser.NET.Tests")]

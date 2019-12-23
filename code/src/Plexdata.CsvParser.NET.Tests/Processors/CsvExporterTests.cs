@@ -31,7 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace Plexdata.CsvParser.Tests.Attributes
+namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
     [TestOf(nameof(CsvExporter<TestClassBase>))]
