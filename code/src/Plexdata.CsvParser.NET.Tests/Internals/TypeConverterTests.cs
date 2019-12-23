@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 
-namespace Plexdata.CsvParser.Tests.Attributes
+namespace Plexdata.CsvParser.Tests.Internals
 {
     [TestFixture]
     [TestOf(nameof(TypeConverter))]

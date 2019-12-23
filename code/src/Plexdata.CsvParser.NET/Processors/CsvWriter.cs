@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-using Plexdata.CsvParser.Helpers;
+using Plexdata.CsvParser.Internals;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

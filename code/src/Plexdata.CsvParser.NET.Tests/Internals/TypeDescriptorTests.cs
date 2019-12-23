@@ -27,7 +27,7 @@ using Plexdata.CsvParser.Attributes;
 using Plexdata.CsvParser.Internals;
 using System;
 
-namespace Plexdata.CsvParser.Tests.Attributes
+namespace Plexdata.CsvParser.Tests.Internals
 {
     [TestFixture]
     [TestOf(nameof(TypeDescriptor))]

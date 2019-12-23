@@ -1,3 +1,21 @@
+<p align="center">
+  <a href="https://github.com/akesseler/Plexdata.CsvParser/blob/master/LICENSE.md" alt="license">
+    <img src="https://img.shields.io/github/license/akesseler/Plexdata.CsvParser.svg" />
+  </a>
+  <a href="https://github.com/akesseler/Plexdata.CsvParser/releases/latest" alt="latest">
+    <img src="https://img.shields.io/github/release/akesseler/Plexdata.CsvParser.svg" />
+  </a>
+  <a href="https://github.com/akesseler/Plexdata.CsvParser/archive/master.zip" alt="master">
+    <img src="https://img.shields.io/github/languages/code-size/akesseler/Plexdata.CsvParser.svg" />
+  </a>
+  <a href="https://akesseler.github.io/Plexdata.CsvParser" alt="docs">
+    <img src="https://img.shields.io/badge/docs-guide-orange.svg" />
+  </a>
+  <a href="https://github.com/akesseler/Plexdata.CsvParser/wiki" alt="wiki">
+    <img src="https://img.shields.io/badge/wiki-API-orange.svg" />
+  </a>
+</p>
+
 ## Plexdata CSV Parser
 
 The _Plexdata CSV Parser_ represents a library that allows importing and exporting of CSV files based on a user-defined class. Further, it is possible to configure the importing and exporting behavior.

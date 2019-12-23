@@ -22,25 +22,16 @@
  * SOFTWARE.
  */
 
-using NUnit.Framework;
-using Plexdata.CsvParser.Constants;
-using System;
-
-namespace Plexdata.CsvParser.Tests.Constants
+namespace Plexdata.CsvParser.Attributes
 {
-    [TestFixture]
-    [TestOf(nameof(ColumnSeparators))]
-    public class ColumnSeparatorsTests
-    {
-        [Test]
-        [TestCase(':', ColumnSeparators.ColonSeparator)]
-        [TestCase(',', ColumnSeparators.CommaSeparator)]
-        [TestCase(';', ColumnSeparators.SemicolonSeparator)]
-        [TestCase('\t', ColumnSeparators.TabulatorSeparator)]
-        [TestCase(',', ColumnSeparators.DefaultSeparator)]
-        public void Verification_ColumnSeparators_ResultAreEqual(Char expected, Char actual)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-    }
+    /// <summary>
+    /// The <see cref="Plexdata.CsvParser.Attributes"/> namespace contains 
+    /// all supported attributes of the <i>Plexdata CSV Parser</i>.
+    /// </summary>
+    /// <remarks>
+    /// This namespace contains classes to be used to tag own classes as CSV 
+    /// document as well as to tag class properties as CSV columns.
+    /// </remarks>
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    class NamespaceDoc { }
 }

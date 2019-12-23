@@ -13,24 +13,24 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
-    <OutputPath>api\</OutputPath>
+    <FrameworkVersion>Cross-platform (.NET Core/.NET Standard)</FrameworkVersion>
+    <OutputPath>wiki\</OutputPath>
     <HtmlHelpName>Plexdata.CsvParser.NET</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\src\Plexdata.CsvParser.NET\bin\Release\Plexdata.CsvParser.NET.dll" />
-      <DocumentationSource sourceFile="..\src\Plexdata.CsvParser.NET\bin\Release\Plexdata.CsvParser.NET.xml" />
+      <DocumentationSource sourceFile="..\src\Plexdata.CsvParser.NET\bin\Release\netstandard2.0\Plexdata.CsvParser.NET.dll" />
+      <DocumentationSource sourceFile="..\src\Plexdata.CsvParser.NET\bin\Release\netstandard2.0\Plexdata.CsvParser.NET.xml" />
     </DocumentationSources>
     <HelpFileFormat>Markdown</HelpFileFormat>
     <SyntaxFilters>C#</SyntaxFilters>
     <PresentationStyle>Markdown</PresentationStyle>
     <CleanIntermediates>True</CleanIntermediates>
-    <KeepLogFile>False</KeepLogFile>
+    <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpTitle>Plexdata.CsvParser.NET</HelpTitle>
-    <HelpFileVersion>1.0.2</HelpFileVersion>
+    <HelpFileVersion>1.1.0</HelpFileVersion>
     <NamingMethod>Guid</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -81,18 +81,12 @@
     <CopyrightText>Copyright &amp;#169%3b 2019 - plexdata.de</CopyrightText>
     <CopyrightHref>http://www.plexdata.de/</CopyrightHref>
     <NamespaceSummaries>
-      <NamespaceSummaryItem name="Plexdata.CsvParser.Attributes" isDocumented="True">The attributes namespace contains classes to be used to tag own classes as CSV document as well as to tag class properties as CSV columns.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Plexdata.CsvParser.Constants" isDocumented="True">The constants namespace contains classes that support an easy access to all constant values provided by the library.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Plexdata.CsvParser.Internals" isDocumented="True">The internals namespace contains classes that should not be used by the outside world.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Plexdata.CsvParser.Processors" isDocumented="True">The processors namespace contains classes to import or export CSV files as well as to configure the importer's and the exporter's behaviour.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Plexdata.CsvParser (Group)" isGroup="True" isDocumented="True" />
-      <NamespaceSummaryItem name="Plexdata.CsvParser.Helpers" isDocumented="True">The namespace contains all supported helper classes.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <ProjectSummary>&amp;lt%3bp&amp;gt%3bThe CSV Parser represents a library that allows importing and exporting of CSV files. Also, it is possible to configure the importing and exporting behavior.&amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3bMain feature of this library is that users only need to create an own class representing a single line of a CSV file. Thereafter, this custom class is used either together with the importer or together with the exporter to process CSV files. &amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3bFinally, it would also be possible %28assuming a proper configuration is used%29 to write a CSV output according to the rules of RFC 4180. For more information about RFC 4180 please visit the web-site under &amp;lt%3ba target=&amp;quot%3b_blank&amp;quot%3b href=&amp;quot%3bhttps://www.ietf.org/rfc/rfc4180.txt&amp;quot%3b&amp;gt%3bhttps://www.ietf.org/rfc/rfc4180.txt&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bTarget Framework&amp;lt%3b/strong&amp;gt%3b&amp;lt%3b/p&amp;gt%3b
-&amp;lt%3bp&amp;gt%3bCurrent target framework of this library is the &amp;lt%3bi&amp;gt%3b.NET Framework v4.7.2&amp;lt%3b/i&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b
+&amp;lt%3bp&amp;gt%3bCurrent target framework of this library is the &amp;lt%3bi&amp;gt%3b.NET Standard v2.0&amp;lt%3b/i&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bLicense&amp;lt%3b/strong&amp;gt%3b&amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3bThe software has been published under the terms of &amp;lt%3ba target=&amp;quot%3b_blank&amp;quot%3b href=&amp;quot%3bhttp://www.plexdata.de/licenses/mit.html&amp;quot%3b&amp;gt%3bMIT License&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
     <FooterText>
@@ -100,8 +94,6 @@
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <MaximumGroupParts>2</MaximumGroupParts>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
-    <FeedbackEMailAddress>development%40plexdata.de</FeedbackEMailAddress>
-    <FeedbackEMailLinkText>Development</FeedbackEMailLinkText>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-using Plexdata.CsvParser.Internals;
 using Plexdata.CsvParser.Processors;
 using System;
 using System.Collections.Generic;
@@ -30,7 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Plexdata.CsvParser.Helpers
+namespace Plexdata.CsvParser.Internals
 {
     /// <summary>
     /// This internal helper class provides functionality to process any CSV-based 

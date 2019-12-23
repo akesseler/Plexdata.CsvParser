@@ -22,25 +22,16 @@
  * SOFTWARE.
  */
 
-using NUnit.Framework;
-using Plexdata.CsvParser.Constants;
-using System;
-
-namespace Plexdata.CsvParser.Tests.Constants
+namespace Plexdata.CsvParser.Constants
 {
-    [TestFixture]
-    [TestOf(nameof(ColumnSeparators))]
-    public class ColumnSeparatorsTests
-    {
-        [Test]
-        [TestCase(':', ColumnSeparators.ColonSeparator)]
-        [TestCase(',', ColumnSeparators.CommaSeparator)]
-        [TestCase(';', ColumnSeparators.SemicolonSeparator)]
-        [TestCase('\t', ColumnSeparators.TabulatorSeparator)]
-        [TestCase(',', ColumnSeparators.DefaultSeparator)]
-        public void Verification_ColumnSeparators_ResultAreEqual(Char expected, Char actual)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-    }
+    /// <summary>
+    /// The <see cref="Plexdata.CsvParser.Constants"/> namespace contains all 
+    /// supported constant values of the <i>Plexdata CSV Parser</i>.
+    /// </summary>
+    /// <remarks>
+    /// This namespace contains classes that support an easy access to all constant 
+    /// values provided by the library.
+    /// </remarks>
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    class NamespaceDoc { }
 }

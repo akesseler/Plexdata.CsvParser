@@ -23,14 +23,14 @@
  */
 
 using NUnit.Framework;
-using Plexdata.CsvParser.Helpers;
+using Plexdata.CsvParser.Internals;
 using Plexdata.CsvParser.Processors;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Plexdata.CsvParser.Tests.Helpers
+namespace Plexdata.CsvParser.Tests.Internals
 {
     [TestFixture]
     [TestOf(nameof(ProcessHelper))]

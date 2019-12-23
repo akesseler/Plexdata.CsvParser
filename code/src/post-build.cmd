@@ -8,7 +8,7 @@ set MSB="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\1
 
 if "%CFG%" == "Release" (
 	cd %SRC%
-	%MSB% /p:Configuration=%CFG% Plexdata.CsvParser.NET.shfbproj
+	%MSB% /p:Configuration=%CFG% Plexdata.CsvParser.NET.help.shfbproj
 	cd "%PWD%"
 	move /y %OUT% "%PWD%"
 ) else (
