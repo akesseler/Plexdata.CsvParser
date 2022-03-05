@@ -5,6 +5,8 @@
   - Support of setters for the index operators and 
   - Additional constructors that allow to create CSV content from scratch.
 - Class `CsvWriter` extended to use instances of class `CsvContainer`.
+- Update of help file creation.
+- Update of user documentation.
 
 **1.1.0**
 - Package migration from .NET Framework 4.7.2 to .NET Standard 2.0 (**BREAKING CHANGES**).
