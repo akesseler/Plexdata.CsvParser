@@ -32,7 +32,7 @@ if %ERRORLEVEL% == 1 (
 
 echo Clean up all "packages"...
 
-rmdir "packages" /s /q 2> nul
+for /d /r %%x in (packages) do rmdir "%%x" /s /q 2> nul
 
 :CHOICE_FINISHED
 

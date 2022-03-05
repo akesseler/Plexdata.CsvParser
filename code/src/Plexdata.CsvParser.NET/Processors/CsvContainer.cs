@@ -52,6 +52,46 @@ namespace Plexdata.CsvParser.Processors
         }
 
         /// <summary>
+        /// The constructor with table initialization.
+        /// </summary>
+        /// <remarks>
+        /// This constructor creates an instance of class <see cref="CsvContainer"/> and 
+        /// initializes its internal table according to provided width and length.
+        /// </remarks>
+        /// <param name="width">
+        /// The width (number of columns) of the internal table.
+        /// </param>
+        /// <param name="length">
+        /// The length (number of rows) of the internal table.
+        /// </param>
+        public CsvContainer(Int32 width, Int32 length)
+            : this(width, length, null)
+        {
+        }
+
+        /// <summary>
+        /// The constructor with table initialization.
+        /// </summary>
+        /// <remarks>
+        /// This constructor creates an instance of class <see cref="CsvContainer"/> and 
+        /// initializes its internal table according to provided width and length.
+        /// </remarks>
+        /// <param name="width">
+        /// The width (number of columns) of the internal table.
+        /// </param>
+        /// <param name="length">
+        /// The length (number of rows) of the internal table.
+        /// </param>
+        /// <param name="settings">
+        /// The settings to be used. Default settings will be used if this argument is <c>null</c>.
+        /// </param>
+        /// <seealso cref="CsvContainer.CreateDefaultSettings()"/>
+        public CsvContainer(Int32 width, Int32 length, CsvSettings settings)
+            : this(CsvContainer.CreateInitialContent(width, length), settings)
+        {
+        }
+
+        /// <summary>
         /// The constructor with content initialization.
         /// </summary>
         /// <remarks>
@@ -68,15 +108,43 @@ namespace Plexdata.CsvParser.Processors
         /// The content to be used. An empty content is automatically used if this 
         /// parameter is <c>null</c>.
         /// </param>
-        internal CsvContainer(List<List<String>> content)
-            : base()
+        public CsvContainer(List<List<String>> content)
+            : this(content, null)
         {
+        }
+
+        /// <summary>
+        /// The constructor with content initialization.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The constructor takes provided <paramref name="content"/> and initializes 
+        /// all remaining properties with their default values.
+        /// </para>
+        /// <para>
+        /// Attention: The value of parameter <paramref name="content"/> represents 
+        /// line-oriented CSV data!
+        /// </para>
+        /// </remarks>
+        /// <param name="content">
+        /// The content to be used. An empty content is automatically used if this 
+        /// parameter is <c>null</c>.
+        /// </param>
+        /// <param name="settings">
+        /// The settings to be used. Default settings will be used if this argument is <c>null</c>.
+        /// </param>
+        /// <seealso cref="CsvContainer.CreateDefaultSettings()"/>
+        public CsvContainer(List<List<String>> content, CsvSettings settings)
+              : base()
+        {
+            settings = settings ?? CsvContainer.CreateDefaultSettings();
+
             this.Content = this.Transform(content);
             this.Compare = StringComparison.OrdinalIgnoreCase;
-            this.Culture = CultureInfo.CurrentUICulture;
-            this.Mappings = new CsvMappings();
-            this.Heading = false;
-            this.Exactly = false;
+            this.Culture = settings.Culture;
+            this.Mappings = settings.Mappings;
+            this.Heading = settings.Heading;
+            this.Exactly = settings.Exactly;
         }
 
         #endregion
@@ -84,12 +152,29 @@ namespace Plexdata.CsvParser.Processors
         #region Public properties
 
         /// <summary>
-        /// Gets the list of column items at specified position.
+        /// Gets and sets the list of column items at specified position.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This getter validates provided column number and if valid it returns the 
         /// column as enumerable list. But <c>null</c> is returned if provided column 
         /// index is either less than zero or greater than total column count.
+        /// </para>
+        /// <para>
+        /// The setter instead tries to change all affected elements at provided column.
+        /// Only possible elements are overwritten by its new content in case of source 
+        /// list is longer than referenced column. In contrast to that all remaining 
+        /// elements are reset to <c>null</c> in case of source list is shorter than 
+        /// referenced column.
+        /// </para>
+        /// <para>
+        /// Additionally please note that nothing will happen if the source list is 
+        /// <c>null</c> or empty.
+        /// </para>
+        /// <para>
+        /// <b>Attention</b>: Any existing column header might be overwritten if new 
+        /// column content does not contain the original header!
+        /// </para>
         /// </remarks>
         /// <value>
         /// An enumerable list of column items.
@@ -111,16 +196,40 @@ namespace Plexdata.CsvParser.Processors
 
                 return null;
             }
+            set
+            {
+                if (value is null)
+                {
+                    return;
+                }
+
+                if (0 <= column && column < this.Content.Count)
+                {
+                    this.ChangeColumn(column, new List<String>(value));
+                }
+            }
         }
 
         /// <summary>
-        /// Gets an element for provided column and at specified index.
+        /// Gets and sets an element for provided column and at specified index.
         /// </summary>
         /// <remarks>
-        /// This getter validates provided column as well as specified index and if 
+        /// <para>
+        /// The getter validates provided column as well as specified index and if 
         /// both are valid it returns the element at column and index. But <c>null</c> 
-        /// is returned if either provided column number or specified index is less 
+        /// is returned either if provided column number or specified index is less 
         /// than zero or greater than total column count.
+        /// </para>
+        /// <para>
+        /// Please be aware, the column header (if exist) is returned for an index 
+        /// of zero. The value at index zero is returned instead if no header exists. 
+        /// The other way round, this accessor always returns the value referenced 
+        /// by column and index without respecting the presents of a column header.
+        /// </para>
+        /// <para>
+        /// The setter instead changes the value at provided column and index but 
+        /// only if both (column and index) are valid. 
+        /// </para>
         /// </remarks>
         /// <value>
         /// The string representation of the CSV content at column and index.
@@ -149,16 +258,43 @@ namespace Plexdata.CsvParser.Processors
 
                 return null;
             }
+            set
+            {
+                if (0 <= column && column < this.Content.Count)
+                {
+                    if (0 <= index && index < this.Content[column].Count)
+                    {
+                        this.Content[column][index] = value;
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Gets the list of column items for provided header.
+        /// Gets and sets the list of column items for provided header.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// This getter tries to find the column where its top level item fits 
         /// provided header name and returns the whole list of column items. Very 
         /// important to note, calling this getter will only have any effect if 
         /// Heading is enabled.
+        /// </para>
+        /// <para>
+        /// The setter instead tries to change all affected elements at column 
+        /// referenced by provided header. Only possible elements are overwritten by 
+        /// its new content in case of source list is longer than column referenced 
+        /// by header. In contrast to that all remaining elements are reset to <c>null</c> 
+        /// in case of source list is shorter than column referenced by provided header.
+        /// </para>
+        /// <para>
+        /// Additionally please note that nothing will happen if the source list is 
+        /// <c>null</c> or empty.
+        /// </para>
+        /// <para>
+        /// <b>Attention</b>: Any existing column header might be overwritten if new 
+        /// column content does not contain the original header!
+        /// </para>
         /// </remarks>
         /// <value>
         /// An enumerable list of column items.
@@ -171,12 +307,12 @@ namespace Plexdata.CsvParser.Processors
         /// of heading is disabled.
         /// </returns>
         /// <seealso cref="CsvContainer.Heading"/>
-        /// <seealso cref="CsvContainer.HeaderToColumn(String)"/>
+        /// <seealso cref="CsvContainer.GetColumnIndex(String)"/>
         public IEnumerable<String> this[String header]
         {
             get
             {
-                Int32 column = this.HeaderToColumn(header);
+                Int32 column = this.GetColumnIndex(header);
 
                 if (column >= 0)
                 {
@@ -185,17 +321,40 @@ namespace Plexdata.CsvParser.Processors
 
                 return null;
             }
+            set
+            {
+                if (value is null)
+                {
+                    return;
+                }
+
+                Int32 column = this.GetColumnIndex(header);
+
+                if (column >= 0)
+                {
+                    this[column] = value;
+                }
+            }
         }
 
         /// <summary>
-        /// Gets an element for provided header and at specified index.
+        /// Gets and sets an element for provided header and at specified index.
         /// </summary>
         /// <remarks>
-        /// This getter tries to find the column where its top level item fits 
+        /// <para>
+        /// The getter tries to find the column where its top level item fits 
         /// provided header name. Thereafter, the specified index is validated.
         /// The content is returned if both conditions could be confirmed. Very 
         /// important to note, calling this getter will only have any effect if 
-        /// Heading is enabled.
+        /// Heading is enabled and a header really exists. Otherwise, the value 
+        /// of index plus one is returned.
+        /// </para>
+        /// <para>
+        /// The setter instead changes the value at column identified by provided 
+        /// header and corresponding index. Also important to note, calling this 
+        /// setter will only have any effect if Heading is enabled and a header 
+        /// really exists. Otherwise, the value of index plus one will be changed.
+        /// </para>
         /// </remarks>
         /// <value>
         /// The string representation of the CSV content at column and index.
@@ -210,13 +369,14 @@ namespace Plexdata.CsvParser.Processors
         /// The string of affected column at specified index or <c>null</c> if 
         /// not found.
         /// </returns>
+        /// <seealso cref="this[Int32, Int32]"/>
         /// <seealso cref="CsvContainer.Heading"/>
-        /// <seealso cref="CsvContainer.HeaderToColumn(String)"/>
+        /// <seealso cref="CsvContainer.GetColumnIndex(String)"/>
         public String this[String header, Int32 index]
         {
             get
             {
-                Int32 column = this.HeaderToColumn(header);
+                Int32 column = this.GetColumnIndex(header);
 
                 if (column >= 0 && index >= 0)
                 {
@@ -224,6 +384,15 @@ namespace Plexdata.CsvParser.Processors
                 }
 
                 return null;
+            }
+            set
+            {
+                Int32 column = this.GetColumnIndex(header);
+
+                if (column >= 0 && index >= 0)
+                {
+                    this[column, index + 1] = value;
+                }
             }
         }
 
@@ -308,9 +477,109 @@ namespace Plexdata.CsvParser.Processors
         /// <seealso cref="CsvSettings.Exactly"/>
         public Boolean Exactly { get; internal set; }
 
+        /// <summary>
+        /// Gets the width (total number of columns) of the content.
+        /// </summary>
+        /// <remarks>
+        /// This getter returns total number of columns of the underlying CSV 
+        /// content.
+        /// </remarks>
+        /// <value>
+        /// The total number of available columns.
+        /// </value>
+        public Int32 Width
+        {
+            get
+            {
+                return this.Content.Count;
+            }
+        }
+
+        /// <summary>
+        /// Gets the length (total number of rows) of the content.
+        /// </summary>
+        /// <remarks>
+        /// This getter returns the total number of rows of the underlying CSV 
+        /// content.
+        /// </remarks>
+        /// <value>
+        /// The total number of available rows.
+        /// </value>
+        public Int32 Length
+        {
+            get
+            {
+                if (this.Content.Count > 0)
+                {
+                    return this.Content[0].Count;
+                }
+
+                return 0;
+            }
+        }
+
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        /// This method tries to determine the column for provided header.
+        /// </summary>
+        /// <remarks>
+        /// The header of a CSV content is defined as its very first row. But such a 
+        /// header row is actually just an optional value. Against this background this 
+        /// method can only return a fitting column if the user knows that a particular 
+        /// CSV content contains a header row. Therefore, treating the first item of each 
+        /// column as header must be enabled by property <see cref="CsvContainer.Heading"/> 
+        /// Otherwise, this method does never return a valid header column index.
+        /// </remarks>
+        /// <param name="header">
+        /// The header name to get a column index for.
+        /// </param>
+        /// <returns>
+        /// The index of the first fitting column. But <c>-1</c> is returned in case of 
+        /// <see cref="CsvContainer.Heading"/> is disabled, <paramref name="header"/> name 
+        /// is <c>null</c>, empty or whitespace, or header name could not be found.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Heading"/>
+        public Int32 GetColumnIndex(String header)
+        {
+            if (!this.Heading || String.IsNullOrWhiteSpace(header))
+            {
+                return -1;
+            }
+
+            if (this.Content.Count > 0)
+            {
+                for (Int32 column = 0; column < this.Content.Count; column++)
+                {
+                    if (String.Compare(header, this.Content[column][0], this.Compare) == 0)
+                    {
+                        return column;
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the transformed content of this container.
+        /// </summary>
+        /// <remarks>
+        /// This method allows to get the transformed content from this container.
+        /// Such a transformation is necessary because of the container uses a 
+        /// "rotated table" for a better item access.
+        /// </remarks>
+        /// <returns>
+        /// The transformed content. The result might be empty in case of no content.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Content"/>
+        /// <seealso cref="CsvContainer.Transform(List{List{String}})"/>
+        public List<List<String>> GetTransformedContent()
+        {
+            return this.Transform(this.Content);
+        }
 
         /// <summary>
         /// This method gets the type-save value for provided column and at specified 
@@ -401,7 +670,7 @@ namespace Plexdata.CsvParser.Processors
         /// </param>
         /// <returns>
         /// An object representing the value for provided column and at specified index 
-        /// or <c>null</c> if either a value for column and index could not be found or 
+        /// or <c>null</c> either if a value for column and index could not be found or 
         /// an exception has occurred during type conversion.
         /// </returns>
         /// <seealso cref="CsvContainer.Exactly"/>
@@ -434,7 +703,7 @@ namespace Plexdata.CsvParser.Processors
         /// </param>
         /// <returns>
         /// An object representing the value for provided column and at specified index 
-        /// or <c>null</c> if either a value for column and index could not be found or 
+        /// or <c>null</c> either if a value for column and index could not be found or 
         /// an exception has occurred during type conversion.
         /// </returns>
         /// <seealso cref="CsvContainer.Exactly"/>
@@ -447,7 +716,7 @@ namespace Plexdata.CsvParser.Processors
         {
             try
             {
-                return GetValue(column, index, type);
+                return this.GetValue(column, index, type);
             }
             catch
             {
@@ -544,7 +813,7 @@ namespace Plexdata.CsvParser.Processors
         /// </param>
         /// <returns>
         /// An object representing the value for provided header and at specified index 
-        /// or <c>null</c> if either a value for header and index could not be found or 
+        /// or <c>null</c> either if a value for header and index could not be found or 
         /// an exception has occurred during type conversion.
         /// </returns>
         /// <seealso cref="CsvContainer.Exactly"/>
@@ -567,7 +836,7 @@ namespace Plexdata.CsvParser.Processors
         /// because this method does not throw any exception.
         /// </remarks>
         /// <param name="header">
-        /// The zero-based index of affected column.
+        /// The header name of affected column.
         /// </param>
         /// <param name="index">
         /// The zero-based index of affected row.
@@ -577,7 +846,7 @@ namespace Plexdata.CsvParser.Processors
         /// </param>
         /// <returns>
         /// An object representing the value for provided header and at specified index 
-        /// or <c>null</c> if either a value for header and index could not be found or 
+        /// or <c>null</c> either if a value for header and index could not be found or 
         /// an exception has occurred during type conversion.
         /// </returns>
         /// <seealso cref="CsvContainer.Exactly"/>
@@ -590,7 +859,7 @@ namespace Plexdata.CsvParser.Processors
         {
             try
             {
-                return GetValue(header, index, type);
+                return this.GetValue(header, index, type);
             }
             catch
             {
@@ -598,9 +867,374 @@ namespace Plexdata.CsvParser.Processors
             }
         }
 
+        /// <summary>
+        /// Sets provided <paramref name="value"/> of type <typeparamref name="TType"/> 
+        /// at field referenced by <paramref name="column"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <typeparam name="TType">
+        /// The type to convert the value into a string.
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="column">
+        /// The zero-based index of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue(Object, Int32, Int32)"/>
+        /// <seealso cref="CsvContainer.TrySetValue{TType}(TType, Int32, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public void SetValue<TType>(TType value, Int32 column, Int32 index)
+        {
+            this.SetValue(value as Object, column, index);
+        }
+
+        /// <summary>
+        /// Sets provided <paramref name="value"/> at field referenced by 
+        /// <paramref name="column"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="column">
+        /// The zero-based index of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue{TType}(TType, Int32, Int32)"/>
+        /// <seealso cref="CsvContainer.TrySetValue(Object, Int32, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public void SetValue(Object value, Int32 column, Int32 index)
+        {
+            this[column, index] = TypeConverter.IntoString(value, this.Culture, this.Mappings);
+        }
+
+        /// <summary>
+        /// Tries to set provided <paramref name="value"/> of type <typeparamref name="TType"/> 
+        /// at field referenced by <paramref name="column"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <typeparam name="TType">
+        /// The type to convert the value into a string.
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="column">
+        /// The zero-based index of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <returns>
+        /// True on success and false on an exception caught.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue{TType}(TType, Int32, Int32)"/>
+        /// <seealso cref="CsvContainer.SetValue(Object, Int32, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public Boolean TrySetValue<TType>(TType value, Int32 column, Int32 index)
+        {
+            try
+            {
+                this.SetValue<TType>(value, column, index);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to set provided <paramref name="value"/> at field referenced by 
+        /// <paramref name="column"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="column">
+        /// The zero-based index of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <returns>
+        /// True on success and false on an exception caught.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue(Object, Int32, Int32)"/>
+        /// <seealso cref="CsvContainer.TrySetValue{TType}(TType, Int32, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public Boolean TrySetValue(Object value, Int32 column, Int32 index)
+        {
+            try
+            {
+                this.SetValue(value, column, index);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Sets provided <paramref name="value"/> of type <typeparamref name="TType"/> 
+        /// at field referenced by <paramref name="header"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <typeparam name="TType">
+        /// The type to convert the value into a string.
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="header">
+        /// The header name of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue(Object, String, Int32)"/>
+        /// <seealso cref="CsvContainer.TrySetValue{TType}(TType, String, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public void SetValue<TType>(TType value, String header, Int32 index)
+        {
+            this.SetValue(value as Object, header, index);
+        }
+
+        /// <summary>
+        /// Sets provided <paramref name="value"/> at field referenced by 
+        /// <paramref name="header"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="header">
+        /// The header name of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue{TType}(TType, String, Int32)"/>
+        /// <seealso cref="CsvContainer.TrySetValue(Object, String, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public void SetValue(Object value, String header, Int32 index)
+        {
+            this[header, index] = TypeConverter.IntoString(value, this.Culture, this.Mappings);
+        }
+
+        /// <summary>
+        /// Tries to set provided <paramref name="value"/> of type <typeparamref name="TType"/> 
+        /// at field referenced by <paramref name="header"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <typeparam name="TType">
+        /// The type to convert the value into a string.
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="header">
+        /// The header name of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <returns>
+        /// True on success and false on an exception caught.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue{TType}(TType, String, Int32)"/>
+        /// <seealso cref="CsvContainer.SetValue(Object, String, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public Boolean TrySetValue<TType>(TType value, String header, Int32 index)
+        {
+            try
+            {
+                this.SetValue<TType>(value, header, index);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to set provided <paramref name="value"/> at field referenced by 
+        /// <paramref name="header"/> and <paramref name="index"/>.
+        /// </summary>
+        /// <remarks>
+        /// First of all, provided value is converted into its string representation. As next 
+        /// this method tries to change current value in field referenced by provided column 
+        /// and index. The content remains unchanged if either the column or the index is out 
+        /// of range.
+        /// </remarks>
+        /// <param name="value">
+        /// The value to be set at provided column and index.
+        /// </param>
+        /// <param name="header">
+        /// The header name of affected column.
+        /// </param>
+        /// <param name="index">
+        /// The zero-based index of affected row.
+        /// </param>
+        /// <returns>
+        /// True on success and false on an exception caught.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Culture"/>
+        /// <seealso cref="CsvContainer.Mappings"/>
+        /// <seealso cref="CsvContainer.SetValue(Object, String, Int32)"/>
+        /// <seealso cref="CsvContainer.TrySetValue{TType}(TType, String, Int32)"/>
+        /// <seealso cref="TypeConverter.IntoString(Object, CultureInfo, CsvMappings)"/>
+        public Boolean TrySetValue(Object value, String header, Int32 index)
+        {
+            try
+            {
+                this.SetValue(value, header, index);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region Private methods
+
+        /// <summary>
+        /// Creates an initial content according to provided <paramref name="width"/> 
+        /// and <paramref name="length"/>.
+        /// </summary>
+        /// <remarks>
+        /// This method creates an initial content according to provided <paramref name="width"/> 
+        /// and <paramref name="length"/>.
+        /// </remarks>
+        /// <param name="width">
+        /// The width (number of columns) of the internal table.
+        /// </param>
+        /// <param name="length">
+        /// The length (number of rows) of the internal table.
+        /// </param>
+        /// <returns>
+        /// An internal table where each field is initialized by a <c>null</c> string value.
+        /// </returns>
+        private static List<List<String>> CreateInitialContent(Int32 width, Int32 length)
+        {
+            List<List<String>> result = new List<List<String>>();
+
+            for (Int32 outer = 0; outer < length; outer++)
+            {
+                result.Add(new List<String>());
+
+                for (Int32 inner = 0; inner < width; inner++)
+                {
+                    result[outer].Add(null);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates an instance of class <see cref="CsvSettings"/> and initializes it with 
+        /// relevant default values.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method creates an instance of class <see cref="CsvSettings"/> and initializes 
+        /// it with relevant default values.
+        /// </para>
+        /// <para>
+        /// Relevant default values means indeed that only a subset of all settings properties 
+        /// is required. These properties are listed below.
+        /// </para>
+        /// <list type="table"> 
+        /// <listheader><term>Property</term><description>Description</description></listheader>
+        /// <item><term>Culture</term><description>The property <see cref="CsvSettings.Culture"/> 
+        /// is initialized with <see cref="CultureInfo.CurrentUICulture"/>.</description></item>  
+        /// <item><term>Mappings</term><description>The property <see cref="CsvSettings.Mappings"/> 
+        /// is initialized with <see cref="CsvMappings.DefaultMappings"/>.</description></item>  
+        /// <item><term>Exactly</term><description>The property <see cref="CsvSettings.Exactly"/> 
+        /// is set to false.</description></item>  
+        /// <item><term>Heading</term><description>The property <see cref="CsvSettings.Heading"/> 
+        /// is set to false.</description></item>  
+        /// </list>
+        /// <para>
+        /// All other properties of class <see cref="CsvSettings"/> are not used inhere and remain 
+        /// therefore untouched.
+        /// </para>
+        /// </remarks>
+        /// <returns>
+        /// An initialized instance of class <see cref="CsvSettings"/>.
+        /// </returns>
+        private static CsvSettings CreateDefaultSettings()
+        {
+            return new CsvSettings()
+            {
+                Culture = CultureInfo.CurrentUICulture,
+                Mappings = CsvMappings.DefaultMappings,
+                Exactly = false,
+                Heading = false,
+            };
+        }
 
         /// <summary>
         /// This method simply tries to convert provided string into its expected 
@@ -635,60 +1269,20 @@ namespace Plexdata.CsvParser.Processors
         }
 
         /// <summary>
-        /// This method tries to determine the column for provided header.
-        /// </summary>
-        /// <remarks>
-        /// The header of a CSV content is defined as its very first row. But such a 
-        /// header row is actually just an optional value. Against this background this 
-        /// method can only return a fitting column if the user knows that a particular 
-        /// CSV content contains a header row. Therefore, treating the first item of each 
-        /// column as header must be enabled by property <see cref="CsvContainer.Heading"/> 
-        /// Otherwise, this method does never return a valid header column index.
-        /// </remarks>
-        /// <param name="header">
-        /// The header name to get a column index for.
-        /// </param>
-        /// <returns>
-        /// The index of the first fitting column. But <c>-1</c> is returned in case of 
-        /// <see cref="CsvContainer.Heading"/> is disabled, <paramref name="header"/> name 
-        /// is <c>null</c>, empty or whitespace, or header name could not be found.
-        /// </returns>
-        /// <seealso cref="CsvContainer.Heading"/>
-        private Int32 HeaderToColumn(String header)
-        {
-            if (!this.Heading || String.IsNullOrWhiteSpace(header))
-            {
-                return -1;
-            }
-
-            if (this.Content.Count > 0)
-            {
-                for (Int32 column = 0; column < this.Content.Count; column++)
-                {
-                    if (String.Compare(header, this.Content[column][0], this.Compare) == 0)
-                    {
-                        return column;
-                    }
-                }
-            }
-
-            return -1;
-        }
-
-        /// <summary>
         /// This method transforms line-oriented content into its column-oriented 
         /// representation.
         /// </summary>
         /// <remarks>
-        /// The source list contains line-oriented content. But the result list 
-        /// should contain column-oriented content. Therefore, a transformation 
-        /// of the line-oriented content into its column-oriented representation 
-        /// is required, and is done in this method.
+        /// The source list contains line-oriented content. But the result list should 
+        /// contain column-oriented content (rotated by 90 degree anticlockwise), which 
+        /// significantly simplifies accessing a single column or a row. Therefore, a 
+        /// transformation of the line-oriented content into its column-oriented version 
+        /// is done in this method.
         /// </remarks>
         /// <example>
         /// <para>
-        /// Parameter <paramref name="source"/> may contain an array that looks 
-        /// like shown below. Each position with dashes means "no data".
+        /// Parameter <paramref name="source"/> may contain an array that looks like as 
+        /// shown below. Each position with dashes means "no data".
         /// </para>
         /// <code>
         /// 11, 12, 13, --
@@ -706,33 +1300,37 @@ namespace Plexdata.CsvParser.Processors
         /// --, 24, --
         /// </code>
         /// <para>
-        /// With this transformation each of the lines in the result represents one 
-        /// column inside the original source. 
+        /// With this transformation each of the lines in the result represents one column 
+        /// inside the original source. 
         /// </para>
         /// </example>
         /// <param name="source">
         /// The line-oriented source data.
         /// </param>
         /// <returns>
-        /// The column-oriented representation of source data. An empty array is 
-        /// returned if the source array is empty.
+        /// The column-oriented representation of source data. An empty array is returned 
+        /// if the source array is empty.
         /// </returns>
         private List<List<String>> Transform(List<List<String>> source)
         {
             // TODO: Find an optimization for the "many" loops.
+            //       Using Linq could be an option, but it does not
+            //       really produce a performance advantage.
 
             List<List<String>> result = new List<List<String>>();
 
-            if (source != null)
+            if (this.IsValid(source))
             {
                 Int32 length = 0;
 
-                // Calculate longest line length.
+                // Determine longest line length.
                 for (Int32 outer = 0; outer < source.Count; outer++)
                 {
-                    if (length < source[outer].Count)
+                    Int32 count = source[outer]?.Count ?? 0;
+
+                    if (length < count)
                     {
-                        length = source[outer].Count;
+                        length = count;
                     }
                 }
 
@@ -741,7 +1339,7 @@ namespace Plexdata.CsvParser.Processors
 
                 for (Int32 index = 0; index < initial.Capacity; index++)
                 {
-                    initial.Add(/*String.Empty*/null);
+                    initial.Add(null);
                 }
 
                 // Create each transformed row.
@@ -756,7 +1354,9 @@ namespace Plexdata.CsvParser.Processors
                 //  * into "result[inner, outer]".
                 for (Int32 outer = 0; outer < source.Count; outer++)
                 {
-                    for (Int32 inner = 0; inner < source[outer].Count; inner++)
+                    Int32 count = source[outer]?.Count ?? 0;
+
+                    for (Int32 inner = 0; inner < count; inner++)
                     {
                         result[inner][outer] = source[outer][inner];
                     }
@@ -764,6 +1364,92 @@ namespace Plexdata.CsvParser.Processors
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Determines whether source list is valid.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method determines whether source list contains at least one item.
+        /// </para>
+        /// <para>
+        /// In best case this method already find the very first Item at column zero 
+        /// and index zero. In worst case loops through all source list lines.
+        /// </para>
+        /// </remarks>
+        /// <param name="source">
+        /// The list to check.
+        /// </param>
+        /// <returns>
+        /// True ist returned if one of the inner lists contains at least one item.
+        /// False is returned in any other case.
+        /// </returns>
+        private Boolean IsValid(List<List<String>> source)
+        {
+            if (source is null)
+            {
+                return false;
+            }
+
+            foreach (List<String> inner in source)
+            {
+                if (inner?.Count > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Changes the whole content of affected column.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method changes the whole content of affected column.
+        /// </para>
+        /// <para>
+        /// In case of source list is longer than affected column only the possible 
+        /// elements are taken into account.
+        /// </para>
+        /// <para>
+        /// The other way round, in case of source list is shorter than affected 
+        /// column all remaining column elements are reset to <c>null</c>.
+        /// </para>
+        /// <para>
+        /// Additionally please note that nothing will happen if the source list 
+        /// is <c>null</c> 
+        /// or empty.
+        /// </para>
+        /// </remarks>
+        /// <param name="column">
+        /// The zero-based index of affected column to change.
+        /// </param>
+        /// <param name="source">
+        /// The new column content.
+        /// </param>
+        private void ChangeColumn(Int32 column, List<String> source)
+        {
+            if (source.Count < 1)
+            {
+                return;
+            }
+
+            List<String> target = this.Content[column];
+
+            Int32 length = Math.Min(target.Count, source.Count);
+
+            for (Int32 index = 0; index < length; index++)
+            {
+                target[index] = source[index];
+            }
+
+            for (Int32 index = length; index < target.Count; index++)
+            {
+                target[index] = null;
+            }
         }
 
         #endregion

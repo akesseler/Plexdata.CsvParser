@@ -84,8 +84,6 @@ namespace Plexdata.CsvParser.Tester
                 {
                     Console.WriteLine(current.ToString());
                 }
-
-                Console.ReadKey();
             }
             catch (Exception exception)
             {
@@ -182,8 +180,6 @@ namespace Plexdata.CsvParser.Tester
                 // "Hurley","Elizabeth",1004,2005-08-08T00:00:00,1234.56,yeah,"Have a short note here."
 
                 CsvExporter<CsvCustomer>.Save(customers, filename, settings);
-
-                Console.ReadKey();
             }
             catch (Exception exception)
             {
@@ -226,8 +222,6 @@ namespace Plexdata.CsvParser.Tester
                 String col3row2 = container.GetValue<String>(3, 2) as String; // null
                 String col3row3 = container.GetValue<String>(3, 3) as String; // martial artist
                 String col3row4 = container.GetValue<String>(3, 4) as String; // null
-
-                Console.ReadKey();
             }
             catch (Exception exception)
             {
@@ -236,7 +230,7 @@ namespace Plexdata.CsvParser.Tester
         }
         */
 
-        /* Write CSV file
+        /* Write CSV file (Part I)
         static void Main(String[] args)
         {
             try
@@ -259,8 +253,89 @@ namespace Plexdata.CsvParser.Tester
 
                 CsvSettings settings = new CsvSettings() { Heading = true, Textual = true, Separator = ColumnSeparators.SemicolonSeparator };
                 CsvWriter.Write(content, filename, settings);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
+        */
 
-                Console.ReadKey();
+        /* Write CSV file (Part II)
+        static void Main(String[] args)
+        {
+            try
+            {
+                // Create a container with two columns and five lines.
+                CsvContainer container = new CsvContainer(2, 5);
+
+                // Set both column headers.
+                container[0, 0] = "Name";
+                container[1, 0] = "Notes";
+
+                // Access each single line and apply their values.
+                // Be aware, with Heading disabled and accessing a
+                // column by number requires to start at index one.
+                container[0, 1] = "Marley, Bob";
+                container[1, 1] = "Jamaican singer-songwriter";
+                container[0, 2] = "Monroe, Marilyn";
+                container[1, 2] = "American actress";
+                container[0, 3] = "Snipes, Wesley";
+                container[1, 3] = "American actor";
+                container[0, 4] = "Hurley, Elizabeth";
+                container[1, 4] = "American actress";
+
+                // Output file would contain this content:
+                // Name,Notes
+                // "Marley, Bob",Jamaican singer-songwriter
+                // "Monroe, Marilyn",American actress
+                // "Snipes, Wesley",American actor
+                // "Hurley, Elizabeth",American actress
+
+                CsvWriter.Write(container, filename);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
+        */
+
+        /* Write CSV file (Part III)
+        static void Main(String[] args)
+        {
+            try
+            {
+                // Create default settings but with Heading enabled.
+                CsvSettings settings = new CsvSettings() { Heading = true };
+
+                // Create a container with two columns and five lines.
+                CsvContainer container = new CsvContainer(2, 5, settings);
+
+                // Set both column headers.
+                container[0, 0] = "Name";
+                container[1, 0] = "Notes";
+
+                // Access each single line and apply their values.
+                // Be aware, with Heading enabled and accessing a
+                // column by header requires to start at index zero.
+                container["Name", 0] = "Marley, Bob";
+                container["Notes", 0] = "Jamaican singer-songwriter";
+                container["Name", 1] = "Monroe, Marilyn";
+                container["Notes", 1] = "American actress";
+                container["Name", 2] = "Snipes, Wesley";
+                container["Notes", 2] = "American actor";
+                container["Name", 3] = "Hurley, Elizabeth";
+                container["Notes", 3] = "American actress";
+
+                // Output file would contain this content:
+                // Name,Notes
+                // "Marley, Bob",Jamaican singer-songwriter
+                // "Monroe, Marilyn",American actress
+                // "Snipes, Wesley",American actor
+                // "Hurley, Elizabeth",American actress
+
+                CsvWriter.Write(container, filename, settings);
             }
             catch (Exception exception)
             {

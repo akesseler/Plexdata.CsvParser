@@ -1,10 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{A3911BF7-B98E-4986-8DEA-84D2236D0D49}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		clean.cmd = clean.cmd
 		HISTORY.md = HISTORY.md
 		post-build.cmd = post-build.cmd
@@ -12,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{A391
 		TODOs.md = TODOs.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plexdata.CsvParser.NET", "Plexdata.CsvParser.NET\Plexdata.CsvParser.NET.csproj", "{B889E9F3-AB10-469E-B541-61BE45DC879B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plexdata.CsvParser.NET", "Plexdata.CsvParser.NET\Plexdata.CsvParser.NET.csproj", "{B889E9F3-AB10-469E-B541-61BE45DC879B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plexdata.CsvParser.Tester", "Plexdata.CsvParser.Tester\Plexdata.CsvParser.Tester.csproj", "{3A16FD06-A05F-4514-8F10-D25FC02ACD90}"
 EndProject

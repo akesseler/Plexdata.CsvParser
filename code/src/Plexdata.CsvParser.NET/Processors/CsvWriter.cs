@@ -133,6 +133,35 @@ namespace Plexdata.CsvParser.Processors
         }
 
         /// <summary>
+        /// This method tries to write given container into given file.
+        /// </summary>
+        /// <remarks>
+        /// This method performes writing of data with default settings. Using 
+        /// default settings means that a possible existing file is overwritten. 
+        /// or from property names.
+        /// </remarks>
+        /// <param name="container">
+        /// The container to be written to the CSV file.
+        /// </param>
+        /// <param name="filename">
+        /// The fully qualified path of the output file.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// This exception is thrown in case of given filename is invalid. 
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown in case of given file could not be deleted. 
+        /// Another reason could be the case when property parsing fails.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// This exception is thrown if given container is &lt;null&gt;.
+        /// </exception>
+        public static void Write(CsvContainer container, String filename)
+        {
+            CsvWriter.Write(CsvWriter.GetContentOrThrow(container), filename);
+        }
+
+        /// <summary>
         /// This method tries to write given values into given file.
         /// </summary>
         /// <remarks>
@@ -158,6 +187,37 @@ namespace Plexdata.CsvParser.Processors
         public static void Write(IEnumerable<IEnumerable<Object>> content, String filename, CsvSettings settings)
         {
             CsvWriter.Write(content, filename, settings, true);
+        }
+
+        /// <summary>
+        /// This method tries to write given container into given file.
+        /// </summary>
+        /// <remarks>
+        /// This method performes writing of data using given settings. But keep 
+        /// in mind, a possible existing file is overwritten. 
+        /// </remarks>
+        /// <param name="container">
+        /// The container to be written to the CSV file.
+        /// </param>
+        /// <param name="filename">
+        /// The fully qualified path of the output file.
+        /// </param>
+        /// <param name="settings">
+        /// The settings to be used to generate the output of the CSV file.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// This exception is thrown in case of given filename is invalid. 
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown in case of given file could not be deleted. 
+        /// Another reason could be the case when property parsing fails.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// This exception is thrown if given container is &lt;null&gt;.
+        /// </exception>
+        public static void Write(CsvContainer container, String filename, CsvSettings settings)
+        {
+            CsvWriter.Write(CsvWriter.GetContentOrThrow(container), filename, settings);
         }
 
         /// <summary>
@@ -220,6 +280,43 @@ namespace Plexdata.CsvParser.Processors
         }
 
         /// <summary>
+        /// This method tries to write given container into given file.
+        /// </summary>
+        /// <remarks>
+        /// This method determines the file existence and performs file deletion if requested. 
+        /// Thereafter, the file content is handled by creating and processing a stream.
+        /// </remarks>
+        /// <param name="container">
+        /// The container to be written to the CSV file.
+        /// </param>
+        /// <param name="filename">
+        /// The fully qualified path of the output file.
+        /// </param>
+        /// <param name="settings">
+        /// The settings to be used to generate the output of the CSV file.
+        /// </param>
+        /// <param name="overwrite">
+        /// If true, then a possible existing file is overwritten. Otherwise, an exception is 
+        /// thrown if a file with the same name already exists.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// This exception is thrown either in case of given values are invalid or if given 
+        /// filename is invalid. 
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown if overwrite mode is disabled and given file already exists 
+        /// or in case of given file could not be deleted. Another reason could be the case when 
+        /// property parsing fails.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// This exception is thrown if given container is &lt;null&gt;.
+        /// </exception>
+        public static void Write(CsvContainer container, String filename, CsvSettings settings, Boolean overwrite)
+        {
+            CsvWriter.Write(CsvWriter.GetContentOrThrow(container), filename, settings, overwrite);
+        }
+
+        /// <summary>
         /// This method tries to write given values into given stream.
         /// </summary>
         /// <remarks>
@@ -242,6 +339,32 @@ namespace Plexdata.CsvParser.Processors
         public static void Write(IEnumerable<IEnumerable<Object>> content, Stream stream)
         {
             CsvWriter.Write(content, stream, new CsvSettings());
+        }
+
+        /// <summary>
+        /// This method tries to write given container into given stream.
+        /// </summary>
+        /// <remarks>
+        /// This method performes writing of data with default settings. Using default 
+        /// settings means for example that special textual treatment is not applied.
+        /// </remarks>
+        /// <param name="container">
+        /// The container to be written to the CSV file.
+        /// </param>
+        /// <param name="stream">
+        /// The stream to write given values into.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// This exception is thrown either in case of given values are invalid 
+        /// or if given stream does not allow write access.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// This exception is thrown if given stream is &lt;null&gt; or if given 
+        /// container is &lt;null&gt;.
+        /// </exception>
+        public static void Write(CsvContainer container, Stream stream)
+        {
+            CsvWriter.Write(CsvWriter.GetContentOrThrow(container), stream);
         }
 
         /// <summary>
@@ -278,12 +401,12 @@ namespace Plexdata.CsvParser.Processors
         /// </exception>
         public static void Write(IEnumerable<IEnumerable<Object>> content, Stream stream, CsvSettings settings)
         {
-            if (content == null || !content.Any())
+            if (content is null || !content.Any())
             {
                 throw new ArgumentException("Content to write may not be null.", nameof(content));
             }
 
-            if (stream == null)
+            if (stream is null)
             {
                 throw new ArgumentNullException(nameof(stream), $"The stream to write the data into is invalid.");
             }
@@ -293,7 +416,7 @@ namespace Plexdata.CsvParser.Processors
                 throw new ArgumentException("No write access to given stream.", nameof(stream));
             }
 
-            if (settings == null)
+            if (settings is null)
             {
                 throw new ArgumentNullException(nameof(settings), "The CSV settings are invalid.");
             }
@@ -314,14 +437,78 @@ namespace Plexdata.CsvParser.Processors
                         CsvWriter.WriteLine(writer, settings.Separator, settings.Textual, settings.Culture, settings.Mappings, line);
                     }
                 }
-            }
 
-            stream.Flush();
+                stream.Flush();
+            }
+        }
+
+        /// <summary>
+        /// This method tries to write given container into given stream.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Please keep in mind, a textual treatment is only applicable for string data 
+        /// types, not matter what the actual value of the 'textual' property of given 
+        /// settings is.
+        /// </para>
+        /// <para>
+        /// Additionally, please keep in mind that Heading treatment should be enabled if 
+        /// the first line actually contains a header. Otherwise Heading treatment should 
+        /// be disabled.
+        /// </para>
+        /// </remarks>
+        /// <param name="container">
+        /// The container to be written to the CSV file.
+        /// </param>
+        /// <param name="stream">
+        /// The stream to write given values into.
+        /// </param>
+        /// <param name="settings">
+        /// The settings to be used to generate the CSV output.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// This exception is thrown either in case of given values are invalid 
+        /// or if given stream does not allow write access.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// This exception is thrown if given stream is &lt;null&gt; or if given 
+        /// settings are &lt;null&gt; or if given container is &lt;null&gt;.
+        /// </exception>
+        public static void Write(CsvContainer container, Stream stream, CsvSettings settings)
+        {
+            CsvWriter.Write(CsvWriter.GetContentOrThrow(container), stream, settings);
         }
 
         #endregion
 
         #region Private methods
+
+        /// <summary>
+        /// Gets the transformed content from given container.
+        /// </summary>
+        /// <remarks>
+        /// This method tries to get transformed content from source container.
+        /// Such a transformation is necessary because of the container uses a 
+        /// "rotated table" for a better item access.
+        /// </remarks>
+        /// <param name="container">
+        /// The source container to obtain transformed content from.
+        /// </param>
+        /// <returns>
+        /// The transformed content, ready to write into its output.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// This exception is thrown if given container is &lt;null&gt;.
+        /// </exception>
+        private static List<List<String>> GetContentOrThrow(CsvContainer container)
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container), "Container to write may not be null.");
+            }
+
+            return container.GetTransformedContent();
+        }
 
         /// <summary>
         /// This method tries to write a particular line into given stream according 

@@ -319,7 +319,6 @@ namespace Plexdata.CsvParser.Processors
             {
                 this.mapping = value ?? CsvMappings.DefaultMappings;
             }
-
         }
 
         #endregion

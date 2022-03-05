@@ -528,11 +528,11 @@ namespace Plexdata.CsvParser.Tests.Processors
 
                 if (locked)
                 {
-                    this.testfile = File.Create(filename);
+                    this.testfile = File.Create(this.filename);
                 }
                 else
                 {
-                    using (File.Create(filename)) { }
+                    using (File.Create(this.filename)) { }
                 }
             }
         }

@@ -1,5 +1,11 @@
 
 
+**1.1.1**
+- New features added to class `CsvContainer`, such as 
+  - Support of setters for the index operators and 
+  - Additional constructors that allow to create CSV content from scratch.
+- Class `CsvWriter` extended to use instances of class `CsvContainer`.
+
 **1.1.0**
 - Package migration from .NET Framework 4.7.2 to .NET Standard 2.0 (**BREAKING CHANGES**).
 - Internal project restructuring.
