@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2019 plexdata.de
+ * Copyright (c) 2022 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ namespace Plexdata.CsvParser.Tests.Processors
         [TestCase("   ", TestName = "Write(Values: null, Filename: whitespace, Settings: null, Overwrite: false)")]
         public void Write_InvalidFilename_ThrowsArgumentException(String filename)
         {
-            Assert.That(() => CsvWriter.Write(null, filename, null, false), Throws.ArgumentException);
+            Assert.That(() => CsvWriter.Write((IEnumerable<IEnumerable<Object>>)null, filename, null, false), Throws.ArgumentException);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             {
                 this.SetUp(false);
 
-                Assert.That(() => CsvWriter.Write(null, this.filename, null, false), Throws.InstanceOf<InvalidOperationException>());
+                Assert.That(() => CsvWriter.Write((IEnumerable<IEnumerable<Object>>)null, this.filename, null, false), Throws.InstanceOf<InvalidOperationException>());
 
                 this.CleanUp();
             }
@@ -75,7 +75,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             {
                 this.SetUp(true);
 
-                Assert.That(() => CsvWriter.Write(null, this.filename, null, true), Throws.InstanceOf<InvalidOperationException>());
+                Assert.That(() => CsvWriter.Write((IEnumerable<IEnumerable<Object>>)null, this.filename, null, true), Throws.InstanceOf<InvalidOperationException>());
 
                 this.CleanUp();
             }
@@ -94,7 +94,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             {
                 this.SetUp(false);
 
-                Assert.That(() => CsvWriter.Write(null, this.filename, null, true), Throws.ArgumentException);
+                Assert.That(() => CsvWriter.Write((IEnumerable<IEnumerable<Object>>)null, this.filename, null, true), Throws.ArgumentException);
 
                 this.CleanUp();
             }
@@ -167,6 +167,34 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
 
             Assert.That(() => CsvWriter.Write(values, stream, settings), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void Write_CsvContainerIsNull_ThrowsArgumentNullException()
+        {
+            Assert.That(() => CsvWriter.Write((CsvContainer)null, this.filename), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void Write_CsvContainerIsValid_ResultWrittenAsexpected()
+        {
+            String expected = "﻿HA,HB,HC\r\n11,12,13\r\n21,22,23\r\n";
+
+            List<List<String>> content = new List<List<String>>()
+            {
+                new List<String>() { "HA", "HB", "HC" },
+                new List<String>() { "11", "12", "13" },
+                new List<String>() { "21", "22", "23" },
+            };
+
+            CsvContainer container = new CsvContainer(content);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                CsvWriter.Write(container, stream);
+
+                Assert.That(Encoding.UTF8.GetString(stream.ToArray()), Is.EqualTo(expected));
+            }
         }
 
         [Test]
@@ -444,11 +472,11 @@ namespace Plexdata.CsvParser.Tests.Processors
 
                 if (locked)
                 {
-                    this.testfile = File.Create(filename);
+                    this.testfile = File.Create(this.filename);
                 }
                 else
                 {
-                    using (File.Create(filename)) { }
+                    using (File.Create(this.filename)) { }
                 }
             }
         }

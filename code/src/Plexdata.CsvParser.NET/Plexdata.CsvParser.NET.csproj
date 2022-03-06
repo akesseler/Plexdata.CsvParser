@@ -7,16 +7,16 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>plexdata.de</Authors>
     <Company>plexdata.de</Company>
-    <Copyright>Copyright © 2019 - plexdata.de</Copyright>
+    <Copyright>Copyright © 2022 - plexdata.de</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/akesseler/Plexdata.CsvParser</PackageProjectUrl>
     <PackageIconUrl>https://github.com/akesseler/Plexdata.CsvParser/blob/master/icon.png?raw=true</PackageIconUrl>
     <Description>This library is a simple CSV file parser. It uses attributes on classes that define which of the properties are used as CSV file columns.</Description>
     <PackageTags>CSV file parser reader writer importer exporter comma separated value</PackageTags>
     <PackageReleaseNotes>See project history under https://github.com/akesseler/Plexdata.CsvParser/blob/master/code/src/HISTORY.md</PackageReleaseNotes>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
-    <FileVersion>1.1.0</FileVersion>
-    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.1</AssemblyVersion>
+    <FileVersion>1.1.1</FileVersion>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
