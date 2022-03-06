@@ -7,6 +7,12 @@
 - Class `CsvWriter` extended to use instances of class `CsvContainer`.
 - Update of help file creation.
 - Update of user documentation.
+- Copyright year changed to 2022 in all files.
+- Framework versions increased from .NET Framework 4.7.2 to .NET Framework 4.8.
+- Update of test framework.
+- Version number increased.
+- Wiki and release update on _GitHub_.
+- Package release on `nuget.org`.
 
 **1.1.0**
 - Package migration from .NET Framework 4.7.2 to .NET Standard 2.0 (**BREAKING CHANGES**).

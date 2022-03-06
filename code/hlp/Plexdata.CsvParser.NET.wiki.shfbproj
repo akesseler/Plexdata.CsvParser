@@ -30,7 +30,7 @@
     <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpTitle>Plexdata.CsvParser.NET</HelpTitle>
-    <HelpFileVersion>1.1.0</HelpFileVersion>
+    <HelpFileVersion>1.1.1</HelpFileVersion>
     <NamingMethod>Guid</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -78,7 +78,7 @@
       <Argument Key="baseSourceCodeUrl" Value="" />
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
-    <CopyrightText>Copyright &amp;#169%3b 2019 - plexdata.de</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2022 - plexdata.de</CopyrightText>
     <CopyrightHref>http://www.plexdata.de/</CopyrightHref>
     <NamespaceSummaries>
     </NamespaceSummaries>

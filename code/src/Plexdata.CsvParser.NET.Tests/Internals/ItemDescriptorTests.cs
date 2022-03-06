@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2019 plexdata.de
+ * Copyright (c) 2022 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             public override Boolean CanWrite => throw new NotImplementedException();
 
-            public override String Name { get { return name; } }
+            public override String Name { get { return this.name; } }
 
             public override Type DeclaringType => throw new NotImplementedException();
 
