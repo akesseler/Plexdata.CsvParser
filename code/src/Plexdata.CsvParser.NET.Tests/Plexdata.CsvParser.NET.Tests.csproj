@@ -53,6 +53,7 @@
     <Compile Include="Attributes\CsvDocumentAttributeTests.cs" />
     <Compile Include="Attributes\CsvIgnoreAttributeTests.cs" />
     <Compile Include="Constants\ColumnSeparatorsTests.cs" />
+    <Compile Include="Extensions\CsvContainerExtensionTests.cs" />
     <Compile Include="Internals\ItemDescriptorTests.cs" />
     <Compile Include="Internals\ProcessHelperTests.cs" />
     <Compile Include="Internals\TypeConverterTests.cs" />

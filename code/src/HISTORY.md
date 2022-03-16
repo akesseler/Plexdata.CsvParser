@@ -1,5 +1,15 @@
 
 
+**1.1.2**
+- New features added to class `CsvContainer`, such as 
+  - New method `Contains` to query a header existence.
+  - New extension method `Serialize` to serialize a container into a string.
+  - New extension method `Sort` to sort a container by a particular column.
+- Update of user documentation.
+- Version number increased.
+- Wiki and release update on _GitHub_.
+- Package release on `nuget.org`.
+
 **1.1.1**
 - New features added to class `CsvContainer`, such as 
   - Support of setters for the index operators and 

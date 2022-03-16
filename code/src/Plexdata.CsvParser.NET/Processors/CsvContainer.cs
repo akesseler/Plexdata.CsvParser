@@ -412,11 +412,14 @@ namespace Plexdata.CsvParser.Processors
         /// Default value is <see cref="StringComparison.OrdinalIgnoreCase"/>.
         /// </summary>
         /// <remarks>
-        /// A string comparison is only relevant to find a particular header.
+        /// A string comparison is only relevant to find a particular header as 
+        /// well as when sorting takes place.
         /// </remarks>
         /// <value>
         /// The algorithm to be used for string compare operations.
         /// </value>
+        /// <seealso cref="Extensions.CsvContainerExtension.Sort(CsvContainer, Int32, Definitions.SortOrder)"/>
+        /// <seealso cref="Extensions.CsvContainerExtension.Sort(CsvContainer, String, Definitions.SortOrder)"/>
         public StringComparison Compare { get; set; }
 
         /// <summary>
@@ -431,7 +434,7 @@ namespace Plexdata.CsvParser.Processors
         /// </value>
         /// <seealso cref="CsvReader"/>
         /// <seealso cref="CsvSettings.Culture"/>
-        public CultureInfo Culture { get; internal set; }
+        public CultureInfo Culture { get; private set; }
 
         /// <summary>
         /// Gets currently applied value mappings. Default value is standard mapping.
@@ -445,7 +448,7 @@ namespace Plexdata.CsvParser.Processors
         /// </value>
         /// <seealso cref="CsvReader"/>
         /// <seealso cref="CsvSettings.Mappings"/>
-        public CsvMappings Mappings { get; internal set; }
+        public CsvMappings Mappings { get; private set; }
 
         /// <summary>
         /// Determines if the header usage is enabled or disabled. Default value is 
@@ -460,7 +463,7 @@ namespace Plexdata.CsvParser.Processors
         /// </value>
         /// <seealso cref="CsvReader"/>
         /// <seealso cref="CsvSettings.Heading"/>
-        public Boolean Heading { get; internal set; }
+        public Boolean Heading { get; private set; }
 
         /// <summary>
         /// Determines if the exactly mode is enabled or disabled. Default value is 
@@ -475,7 +478,7 @@ namespace Plexdata.CsvParser.Processors
         /// </value>
         /// <seealso cref="CsvReader"/>
         /// <seealso cref="CsvSettings.Exactly"/>
-        public Boolean Exactly { get; internal set; }
+        public Boolean Exactly { get; private set; }
 
         /// <summary>
         /// Gets the width (total number of columns) of the content.
@@ -487,6 +490,8 @@ namespace Plexdata.CsvParser.Processors
         /// <value>
         /// The total number of available columns.
         /// </value>
+        /// <seealso cref="CsvContainer.Length"/>
+        /// <seealso cref="CsvContainer.IsEmpty"/>
         public Int32 Width
         {
             get
@@ -505,6 +510,8 @@ namespace Plexdata.CsvParser.Processors
         /// <value>
         /// The total number of available rows.
         /// </value>
+        /// <seealso cref="CsvContainer.Width"/>
+        /// <seealso cref="CsvContainer.IsEmpty"/>
         public Int32 Length
         {
             get
@@ -518,9 +525,54 @@ namespace Plexdata.CsvParser.Processors
             }
         }
 
+        /// <summary>
+        /// Indicates whether this container instance is empty or not.
+        /// </summary>
+        /// <remarks>
+        /// A container instance is considered as empty either it its 
+        /// <see cref="CsvContainer.Width"/> or its <see cref="CsvContainer.Length"/> 
+        /// is zero.
+        /// </remarks>
+        /// <value>
+        /// True if this container is considered as empty and false otherwise.
+        /// </value>
+        /// <seealso cref="CsvContainer.Width"/>
+        /// <seealso cref="CsvContainer.Length"/>
+        public Boolean IsEmpty
+        {
+            get
+            {
+                return this.Width < 1 || this.Length < 1;
+            }
+        }
+
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        /// Determines whether a particular header is in the container.
+        /// </summary>
+        /// <remarks>
+        /// The header of a CSV content is defined as its very first row. But such a 
+        /// header row is actually just an optional value. Against this background this 
+        /// method can only return a fitting column if the user knows that a particular 
+        /// CSV content contains a header row. Therefore, treating the first item of each 
+        /// column as header must be enabled by property <see cref="CsvContainer.Heading"/> 
+        /// Otherwise, this method does never return a valid header determination.
+        /// </remarks>
+        /// <param name="header">
+        /// The header name to check its existence for.
+        /// </param>
+        /// <returns>
+        /// True is returned if the requested header exists and false otherwise.
+        /// </returns>
+        /// <seealso cref="CsvContainer.Heading"/>
+        /// <seealso cref="CsvContainer.GetColumnIndex(String)"/>
+        public Boolean Contains(String header)
+        {
+            return this.GetColumnIndex(header) >= 0;
+        }
 
         /// <summary>
         /// This method tries to determine the column for provided header.

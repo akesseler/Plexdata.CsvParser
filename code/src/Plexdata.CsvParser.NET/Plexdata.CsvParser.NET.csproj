@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Plexdata.CsvParser.NET</AssemblyName>
     <RootNamespace>Plexdata.CsvParser</RootNamespace>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>plexdata.de</Authors>
     <Company>plexdata.de</Company>
     <Copyright>Copyright © 2022 - plexdata.de</Copyright>
@@ -13,9 +13,10 @@
     <Description>This library is a simple CSV file parser. It uses attributes on classes that define which of the properties are used as CSV file columns.</Description>
     <PackageTags>CSV file parser reader writer importer exporter comma separated value</PackageTags>
     <PackageReleaseNotes>See project history under https://github.com/akesseler/Plexdata.CsvParser/blob/master/code/src/HISTORY.md</PackageReleaseNotes>
-    <AssemblyVersion>1.1.1</AssemblyVersion>
-    <FileVersion>1.1.1</FileVersion>
-    <Version>1.1.1</Version>
+    <AssemblyVersion>1.1.2</AssemblyVersion>
+    <FileVersion>1.1.2</FileVersion>
+    <Version>1.1.2</Version>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,10 +36,6 @@
   <ItemGroup>
     <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="$(PackageLicenseFile)" />
     <None Include="..\..\..\icon.png" Pack="true" PackagePath="$(PackageIcon)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Summaries\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
