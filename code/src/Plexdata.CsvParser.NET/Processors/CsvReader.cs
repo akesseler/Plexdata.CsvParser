@@ -279,13 +279,7 @@ namespace Plexdata.CsvParser.Processors
                     content.Add(ProcessHelper.SplitIntoCells(lines[outer], separator));
                 }
 
-                result = new CsvContainer(content)
-                {
-                    Mappings = settings.Mappings,
-                    Culture = settings.Culture,
-                    Heading = settings.Heading,
-                    Exactly = settings.Exactly,
-                };
+                result = new CsvContainer(content, settings);
             }
 
             return result;

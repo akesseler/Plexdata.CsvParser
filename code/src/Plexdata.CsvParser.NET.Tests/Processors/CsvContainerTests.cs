@@ -463,10 +463,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             Assert.That(instance[header], Is.Null);
         }
@@ -484,10 +481,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             Assert.That(String.Join(",", instance[header]), Is.EqualTo(expected));
         }
@@ -505,10 +499,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             String expected = this.GetJoinedContent(instance.Content);
 
@@ -533,10 +524,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             String expected = this.GetJoinedContent(instance.Content);
 
@@ -569,10 +557,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "11", "12", "13"       },
                 new List<String>() { "21", "22", "23", "24" },
                 new List<String>() { "31", "32"             },
-            })
-            {
-                Heading = true
-            };
+            }, new CsvSettings() { Heading = true });
 
             List<String> values = new List<String>() { "??", "AA", "BB", "CC" };
 
@@ -603,10 +588,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "11", "12", "13"       },
                 new List<String>() { "21", "22", "23", "24" },
                 new List<String>() { "31", "32"             },
-            })
-            {
-                Heading = true
-            };
+            }, new CsvSettings() { Heading = true });
 
             List<String> values = new List<String>() { "??", "AA", "BB", "CC", "DD" };
 
@@ -637,10 +619,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "11", "12", "13"       },
                 new List<String>() { "21", "22", "23", "24" },
                 new List<String>() { "31", "32"             },
-            })
-            {
-                Heading = true
-            };
+            }, new CsvSettings() { Heading = true });
 
             List<String> values = new List<String>() { "??", "AA", "BB" };
 
@@ -757,10 +736,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "41", "42"                   },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             instance["HA", 0] = "A1";
             instance["HB", 0] = "B1";
@@ -823,6 +799,50 @@ namespace Plexdata.CsvParser.Tests.Processors
         [TestCase(false, "")]
         [TestCase(false, " ")]
         [TestCase(false, "unknown")]
+        public void Contains_InvalidHeaderValue_ResultIsFalse(Boolean heading, String header)
+        {
+            List<List<String>> content = new List<List<String>>()
+            {
+                new List<String>() { "HA", "HB", "HC"       },
+                new List<String>() { "11", "12", "13"       },
+                new List<String>() { "21", "22", "23", "24" },
+                new List<String>() { "31", "32"             },
+            };
+
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = heading });
+
+            Assert.That(instance.Contains(header), Is.False);
+        }
+
+        [TestCase(true, "HA", true)]
+        [TestCase(true, "HB", true)]
+        [TestCase(true, "HC", true)]
+        [TestCase(false, "HA", false)]
+        [TestCase(false, "HB", false)]
+        [TestCase(false, "HC", false)]
+        public void Contains_ValidHeaderValue_ResultAsExpected(Boolean heading, String header, Boolean expected)
+        {
+            List<List<String>> content = new List<List<String>>()
+            {
+                new List<String>() { "HA", "HB", "HC"       },
+                new List<String>() { "11", "12", "13"       },
+                new List<String>() { "21", "22", "23", "24" },
+                new List<String>() { "31", "32"             },
+            };
+
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = heading });
+
+            Assert.That(instance.Contains(header), Is.EqualTo(expected));
+        }
+
+        [TestCase(true, null)]
+        [TestCase(true, "")]
+        [TestCase(true, " ")]
+        [TestCase(true, "unknown")]
+        [TestCase(false, null)]
+        [TestCase(false, "")]
+        [TestCase(false, " ")]
+        [TestCase(false, "unknown")]
         public void GetColumnIndex_InvalidHeaderValue_ResultAsExpected(Boolean heading, String header)
         {
             List<List<String>> content = new List<List<String>>()
@@ -833,10 +853,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>() { "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = heading
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = heading });
 
             Assert.That(instance.GetColumnIndex(header), Is.EqualTo(-1));
         }
@@ -852,9 +869,8 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>(){ "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true })
             {
-                Heading = true,
                 Compare = StringComparison.InvariantCulture
             };
 
@@ -928,10 +944,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>(){ "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             Assert.That(instance.GetValue<Int32>(column, index), Is.Null);
         }
@@ -955,10 +968,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>(){ "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             Assert.That(instance.GetValue<Int32>(column, index), Is.EqualTo(expected));
         }
@@ -1034,10 +1044,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>(){ "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             String original = this.GetJoinedContent(instance.Content);
 
@@ -1065,10 +1072,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 new List<String>(){ "31", "32"             },
             };
 
-            CsvContainer instance = new CsvContainer(content)
-            {
-                Heading = true
-            };
+            CsvContainer instance = new CsvContainer(content, new CsvSettings() { Heading = true });
 
             instance.SetValue<Int32>(999, column, index);
 
