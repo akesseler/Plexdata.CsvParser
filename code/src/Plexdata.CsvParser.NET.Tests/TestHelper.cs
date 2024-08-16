@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,16 @@
  */
 
 using NUnit.Framework;
+using Plexdata.Utilities.Testing;
 using System;
 
 namespace Plexdata.CsvParser.Tests
 {
     internal static class TestHelper
     {
-        public const String UnitTest = "UnitTest";
-
-        public const String IntegrationTest = "IntegrationTest";
-
-        public static Boolean IsUnitTest()
+        public static Boolean IsIntegrationTestCategory()
         {
-            return TestHelper.IsTestCategory(String.Empty) || TestHelper.IsTestCategory(TestHelper.UnitTest);
-        }
-
-        public static Boolean IsIntegrationTest()
-        {
-            return TestHelper.IsTestCategory(TestHelper.IntegrationTest);
+            return TestHelper.IsTestCategory(TestType.IntegrationTest);
         }
 
         public static Boolean IsTestCategory(String category)

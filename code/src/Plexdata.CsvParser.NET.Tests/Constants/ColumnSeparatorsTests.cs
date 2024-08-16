@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,18 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Constants;
+using Plexdata.Utilities.Testing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Plexdata.CsvParser.Tests.Constants
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(ColumnSeparators))]
     public class ColumnSeparatorsTests
     {
-        [Test]
         [TestCase(':', ColumnSeparators.ColonSeparator)]
         [TestCase(',', ColumnSeparators.CommaSeparator)]
         [TestCase(';', ColumnSeparators.SemicolonSeparator)]
@@ -40,7 +43,7 @@ namespace Plexdata.CsvParser.Tests.Constants
         [TestCase(',', ColumnSeparators.DefaultSeparator)]
         public void Verification_ColumnSeparators_ResultAreEqual(Char expected, Char actual)
         {
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
     }
 }

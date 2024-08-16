@@ -1,5 +1,14 @@
 
 
+**1.1.3**
+- Support of line breaks within strings.
+- Update of user documentation.
+- Update of test framework packages.
+- Version number increased.
+- Copyright year changed to 2024 in all files.
+- Wiki and release update on _GitHub_.
+- Package release on `nuget.org`.
+
 **1.1.2**
 - New features added to class `CsvContainer`, such as 
   - New method `Contains` to query a header existence.

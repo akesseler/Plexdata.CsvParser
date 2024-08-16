@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,18 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
 namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvContainer))]
     public class CsvContainerTests
     {
