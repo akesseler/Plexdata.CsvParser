@@ -7,15 +7,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>plexdata.de</Authors>
     <Company>plexdata.de</Company>
-    <Copyright>Copyright © 2022 - plexdata.de</Copyright>
+    <Copyright>Copyright © 2024 - plexdata.de</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/akesseler/Plexdata.CsvParser</PackageProjectUrl>
     <Description>This library is a simple CSV file parser. It uses attributes on classes that define which of the properties are used as CSV file columns.</Description>
     <PackageTags>CSV file parser reader writer importer exporter comma separated value</PackageTags>
     <PackageReleaseNotes>See project history under https://github.com/akesseler/Plexdata.CsvParser/blob/master/code/src/HISTORY.md</PackageReleaseNotes>
-    <AssemblyVersion>1.1.2</AssemblyVersion>
-    <FileVersion>1.1.2</FileVersion>
-    <Version>1.1.2</Version>
+    <AssemblyVersion>1.1.3</AssemblyVersion>
+    <FileVersion>1.1.3</FileVersion>
+    <Version>1.1.3</Version>
     <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 

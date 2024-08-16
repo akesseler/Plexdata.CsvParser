@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,10 @@
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -34,6 +36,8 @@ using System.Text;
 namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvExporter<TestClassBase>))]
     public class CsvExporterTests
     {
@@ -42,24 +46,22 @@ namespace Plexdata.CsvParser.Tests.Processors
         private FileStream testfile = null;
         private String filename = String.Empty;
 
-        [Test]
         [TestCase(null, TestName = "Save(Values: null, Filename: null, Settings: null, Overwrite: false)")]
         [TestCase("", TestName = "Save(Values: null, Filename: empty, Settings: null, Overwrite: false)")]
         [TestCase("   ", TestName = "Save(Values: null, Filename: whitespace, Settings: null, Overwrite: false)")]
         public void Save_InvalidFilename_ThrowsArgumentException(String filename)
         {
-            Assert.Throws<ArgumentException>(() => { CsvExporter<TestClassBase>.Save(null, filename, null, false); });
+            Assert.That(() => CsvExporter<TestClassBase>.Save(null, filename, null, false), Throws.ArgumentException);
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Save_OverwriteFalseFileExists_ThrowsInvalidOperationException()
         {
             try
             {
                 this.SetUp(false);
 
-                Assert.Throws<InvalidOperationException>(() => { CsvExporter<TestClassBase>.Save(null, this.filename, null, false); });
+                Assert.That(() => CsvExporter<TestClassBase>.Save(null, this.filename, null, false), Throws.InstanceOf<InvalidOperationException>());
 
                 this.CleanUp();
             }
@@ -70,15 +72,14 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Save_OverwriteTrueFileExistsButLocked_ThrowsInvalidOperationException()
         {
             try
             {
                 this.SetUp(true);
 
-                Assert.Throws<InvalidOperationException>(() => { CsvExporter<TestClassBase>.Save(null, this.filename, null, true); });
+                Assert.That(() => CsvExporter<TestClassBase>.Save(null, this.filename, null, true), Throws.InstanceOf<InvalidOperationException>());
 
                 this.CleanUp();
             }
@@ -89,15 +90,14 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Save_OverwriteTrueFileExists_ThrowsArgumentException()
         {
             try
             {
                 this.SetUp(false);
 
-                Assert.Throws<ArgumentException>(() => { CsvExporter<TestClassBase>.Save(null, this.filename, null, true); });
+                Assert.That(() => CsvExporter<TestClassBase>.Save(null, this.filename, null, true), Throws.ArgumentException);
 
                 this.CleanUp();
             }
@@ -108,7 +108,6 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        [Test]
         [TestCase(1, TestName = "Save(Values: null, Stream: null, Settings: null)")]
         [TestCase(2, TestName = "Save(Values: empty, Stream: null, Settings: null)")]
         [TestCase(3, TestName = "Save(Values: valid, Stream: read-only, Settings: null)")]
@@ -140,14 +139,13 @@ namespace Plexdata.CsvParser.Tests.Processors
                     exception = typeof(ArgumentException);
                     break;
                 default:
-                    Assert.IsFalse(true);
+                    Assert.That(true, Is.False);
                     break;
             }
 
-            Assert.Throws<ArgumentException>(() => { CsvExporter<TestClassBase>.Save(values, stream, settings); });
+            Assert.That(() => CsvExporter<TestClassBase>.Save(values, stream, settings), Throws.ArgumentException);
         }
 
-        [Test]
         [TestCase(1, TestName = "Save(Values: valid, Stream: null, Settings: null)")]
         [TestCase(2, TestName = "Save(Values: valid, Stream: valid, Settings: null)")]
         public void Save_ParametersInvalid_ThrowsArgumentNullException(Int32 configuration)
@@ -172,11 +170,11 @@ namespace Plexdata.CsvParser.Tests.Processors
                     exception = typeof(ArgumentNullException);
                     break;
                 default:
-                    Assert.IsFalse(true);
+                    Assert.That(true, Is.False);
                     break;
             }
 
-            Assert.Throws<ArgumentNullException>(() => { CsvExporter<TestClassBase>.Save(values, stream, settings); });
+            Assert.That(() => CsvExporter<TestClassBase>.Save(values, stream, settings), Throws.ArgumentNullException);
         }
 
         [Test]
@@ -396,8 +394,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             Assert.That(actual, Is.EqualTo(expected));
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Save_FullIntegrationTest_ResultIsAsExpected()
         {
             String expected =
@@ -522,7 +519,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
         private void SetUp(Boolean locked)
         {
-            if (TestHelper.IsIntegrationTest())
+            if (TestHelper.IsIntegrationTestCategory())
             {
                 this.filename = Path.GetTempFileName();
 
@@ -541,7 +538,7 @@ namespace Plexdata.CsvParser.Tests.Processors
         {
             try
             {
-                if (TestHelper.IsIntegrationTest())
+                if (TestHelper.IsIntegrationTestCategory())
                 {
                     if (this.testfile != null)
                     {

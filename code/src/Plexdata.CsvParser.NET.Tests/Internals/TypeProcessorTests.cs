@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,16 @@
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
 using Plexdata.CsvParser.Internals;
+using Plexdata.Utilities.Testing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Plexdata.CsvParser.Tests.Internals
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(TypeProcessor))]
     public class TypeProcessorTests
     {
@@ -38,32 +42,32 @@ namespace Plexdata.CsvParser.Tests.Internals
         public void LoadDescriptor_InstanceIsValid_ResultIsSettingsCountZero()
         {
             TypeDescriptor actual = TypeProcessor.LoadDescriptor<TestClassUntagged>();
-            Assert.AreEqual(0, actual.Settings.Count());
+            Assert.That(actual.Settings.Count(), Is.Zero);
         }
 
         [Test]
         public void LoadDescriptor_InstanceIsValid_ResultIsSettingsCount5()
         {
             TypeDescriptor actual = TypeProcessor.LoadDescriptor<TestClassWithTags>();
-            Assert.AreEqual(5, actual.Settings.Count());
+            Assert.That(actual.Settings.Count(), Is.EqualTo(5));
         }
 
         [Test]
         public void LoadDescriptor_ConfirmAndReorganizeDuplicates_ThrowsNotSupportedException()
         {
-            Assert.Throws<NotSupportedException>(() => { TypeProcessor.LoadDescriptor<TestClassWithDuplicates>(); });
+            Assert.That(() => TypeProcessor.LoadDescriptor<TestClassWithDuplicates>(), Throws.InstanceOf<NotSupportedException>());
         }
 
         [Test]
         public void LoadDescriptor_ConfirmAndReorganizeSteppings_ThrowsNotSupportedException()
         {
-            Assert.Throws<NotSupportedException>(() => { TypeProcessor.LoadDescriptor<TestClassWithSteppings>(); });
+            Assert.That(() => TypeProcessor.LoadDescriptor<TestClassWithSteppings>(), Throws.InstanceOf<NotSupportedException>());
         }
 
         [Test]
         public void LoadDescriptor_ConfirmAndReorganizeMixings_ThrowsNotSupportedException()
         {
-            Assert.Throws<NotSupportedException>(() => { TypeProcessor.LoadDescriptor<TestClassWithMixings>(); });
+            Assert.That(() => TypeProcessor.LoadDescriptor<TestClassWithMixings>(), Throws.InstanceOf<NotSupportedException>());
         }
 
         [Test]
@@ -77,7 +81,7 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             TypeDescriptor instance = TypeProcessor.LoadDescriptor<TestClassUnordered>();
 
-            Assert.AreEqual(expected, String.Join("", instance.Settings));
+            Assert.That(String.Join("", instance.Settings), Is.EqualTo(expected));
         }
 
         private class TestClassUntagged

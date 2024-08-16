@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ namespace Plexdata.CsvParser.Processors
     /// <remarks>
     /// <para>
     /// CSV actually means Comma Separated Values. Sometimes it is also called as Character 
-    /// Separated Values. But not matter which name is used, CSV always represents a text file 
+    /// Separated Values. But no matter which name is used, CSV always represents a text file 
     /// mainly used for data exchange between different system.
     /// </para>
     /// <para>
@@ -373,7 +373,7 @@ namespace Plexdata.CsvParser.Processors
         /// <remarks>
         /// <para>
         /// Please keep in mind, a textual treatment is only applicable for string data 
-        /// types, not matter what the actual value of the 'textual' property of given 
+        /// types, no matter what the actual value of the 'textual' property of given 
         /// settings is.
         /// </para>
         /// <para>
@@ -448,7 +448,7 @@ namespace Plexdata.CsvParser.Processors
         /// <remarks>
         /// <para>
         /// Please keep in mind, a textual treatment is only applicable for string data 
-        /// types, not matter what the actual value of the 'textual' property of given 
+        /// types, no matter what the actual value of the 'textual' property of given 
         /// settings is.
         /// </para>
         /// <para>

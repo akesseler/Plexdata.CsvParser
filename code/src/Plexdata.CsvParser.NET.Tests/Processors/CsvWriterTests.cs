@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,10 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -33,13 +35,14 @@ using System.Text;
 namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvWriter))]
     public class CsvWriterTests
     {
         private FileStream testfile = null;
         private String filename = String.Empty;
 
-        [Test]
         [TestCase(null, TestName = "Write(Values: null, Filename: null, Settings: null, Overwrite: false)")]
         [TestCase("", TestName = "Write(Values: null, Filename: empty, Settings: null, Overwrite: false)")]
         [TestCase("   ", TestName = "Write(Values: null, Filename: whitespace, Settings: null, Overwrite: false)")]
@@ -48,8 +51,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             Assert.That(() => CsvWriter.Write((IEnumerable<IEnumerable<Object>>)null, filename, null, false), Throws.ArgumentException);
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Write_OverwriteFalseFileExists_ThrowsInvalidOperationException()
         {
             try
@@ -67,8 +69,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Write_OverwriteTrueFileExistsButLocked_ThrowsInvalidOperationException()
         {
             try
@@ -86,8 +87,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Write_OverwriteTrueFileExists_ThrowsArgumentException()
         {
             try
@@ -105,7 +105,6 @@ namespace Plexdata.CsvParser.Tests.Processors
             }
         }
 
-        [Test]
         [TestCase(1, TestName = "Write(Values: null, Stream: null, Settings: null)")]
         [TestCase(2, TestName = "Write(Values: empty, Stream: null, Settings: null)")]
         [TestCase(3, TestName = "Write(Values: valid, Stream: read-only, Settings: null)")]
@@ -133,14 +132,13 @@ namespace Plexdata.CsvParser.Tests.Processors
                     settings = null;
                     break;
                 default:
-                    Assert.IsFalse(true);
+                    Assert.That(true, Is.False);
                     break;
             }
 
             Assert.That(() => CsvWriter.Write(values, stream, settings), Throws.ArgumentException);
         }
 
-        [Test]
         [TestCase(1, TestName = "Write(Values: valid, Stream: null, Settings: null)")]
         [TestCase(2, TestName = "Write(Values: valid, Stream: valid, Settings: null)")]
         public void Write_ParametersInvalid_ThrowsArgumentNullException(Int32 configuration)
@@ -162,7 +160,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                     settings = null;
                     break;
                 default:
-                    Assert.IsFalse(true);
+                    Assert.That(true, Is.False);
                     break;
             }
 
@@ -421,8 +419,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             Assert.That(actual, Is.EqualTo(expected));
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Write_FullIntegrationTest_ResultIsAsExpected()
         {
             String expected =
@@ -466,7 +463,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
         private void SetUp(Boolean locked)
         {
-            if (TestHelper.IsIntegrationTest())
+            if (TestHelper.IsIntegrationTestCategory())
             {
                 this.filename = Path.GetTempFileName();
 
@@ -485,7 +482,7 @@ namespace Plexdata.CsvParser.Tests.Processors
         {
             try
             {
-                if (TestHelper.IsIntegrationTest())
+                if (TestHelper.IsIntegrationTestCategory())
                 {
                     if (this.testfile != null)
                     {

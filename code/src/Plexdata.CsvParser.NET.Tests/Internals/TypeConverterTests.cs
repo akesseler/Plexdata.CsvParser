@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,30 +25,33 @@
 using NUnit.Framework;
 using Plexdata.CsvParser.Internals;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
 namespace Plexdata.CsvParser.Tests.Internals
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(TypeConverter))]
     public class TypeConverterTests
     {
         [Test]
         public void IntoString_CultureInfoIsNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => { TypeConverter.IntoString(null, null, CsvMappings.DefaultMappings); });
+            Assert.That(() => TypeConverter.IntoString(null, null, CsvMappings.DefaultMappings), Throws.ArgumentNullException);
         }
 
         [Test]
         public void IntoString_MappingInfoIsNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => { TypeConverter.IntoString(null, CultureInfo.CurrentCulture, null); });
+            Assert.That(() => TypeConverter.IntoString(null, CultureInfo.CurrentCulture, null), Throws.ArgumentNullException);
         }
 
-        [Test]
         [TestCase("", null, "")]
         [TestCase("string", null, "string")]
         [TestCase('#', null, "#")]
@@ -60,10 +63,9 @@ namespace Plexdata.CsvParser.Tests.Internals
         public void IntoString_ConvertingStringsAndChars_ResultAreEqual(Object value, String culture, String expected)
         {
             CultureInfo cultureInfo = culture == null ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
-            Assert.AreEqual(expected, TypeConverter.IntoString(value, cultureInfo, CsvMappings.DefaultMappings));
+            Assert.That(TypeConverter.IntoString(value, cultureInfo, CsvMappings.DefaultMappings), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase("string", null, "string")]
         [TestCase(true, null, "true")]
         [TestCase('#', null, "#")]
@@ -89,10 +91,9 @@ namespace Plexdata.CsvParser.Tests.Internals
         public void IntoString_ConvertingIntegerTypes_ResultAreEqual(Object value, String culture, String expected)
         {
             CultureInfo cultureInfo = culture == null ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
-            Assert.AreEqual(expected, TypeConverter.IntoString(value, cultureInfo, CsvMappings.DefaultMappings));
+            Assert.That(TypeConverter.IntoString(value, cultureInfo, CsvMappings.DefaultMappings), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase(true, null, "true")]
         [TestCase(false, null, "false")]
         [TestCase(true, "en-US", "true")]
@@ -100,10 +101,9 @@ namespace Plexdata.CsvParser.Tests.Internals
         public void IntoString_ConvertingBooleanTypes_ResultAreEqual(Object value, String culture, String expected)
         {
             CultureInfo cultureInfo = culture == null ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
-            Assert.AreEqual(expected, TypeConverter.IntoString(value, cultureInfo, CsvMappings.DefaultMappings));
+            Assert.That(TypeConverter.IntoString(value, cultureInfo, CsvMappings.DefaultMappings), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase(typeof(Decimal), 0.1234, null, "0,1234")]
         [TestCase(typeof(Double), 0.1234, null, "0,1234")]
         [TestCase(typeof(Single), 0.1234, null, "0,1234")]
@@ -134,14 +134,13 @@ namespace Plexdata.CsvParser.Tests.Internals
             }
             else
             {
-                Assert.IsFalse(true);
+                Assert.That(true, Is.False);
             }
 
             CultureInfo cultureInfo = culture == null ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
-            Assert.AreEqual(expected, TypeConverter.IntoString(actual, cultureInfo, CsvMappings.DefaultMappings));
+            Assert.That(TypeConverter.IntoString(actual, cultureInfo, CsvMappings.DefaultMappings), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase(null)]
         [TestCase("en-US")]
         public void IntoString_ConvertingDateTimeTypes_ResultAreEqual(String culture)
@@ -149,10 +148,9 @@ namespace Plexdata.CsvParser.Tests.Internals
             DateTime actual = DateTime.Now;
             String expected = String.Format("{0:0000}-{1:00}-{2:00}T{3:00}:{4:00}:{5:00}", actual.Year, actual.Month, actual.Day, actual.Hour, actual.Minute, actual.Second);
             CultureInfo cultureInfo = culture == null ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
-            Assert.AreEqual(expected, TypeConverter.IntoString(actual, cultureInfo, CsvMappings.DefaultMappings));
+            Assert.That(TypeConverter.IntoString(actual, cultureInfo, CsvMappings.DefaultMappings), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase(typeof(List<String>), null, "System.Collections.Generic.List`1[System.String]")]
         [TestCase(typeof(Object), null, "System.Object")]
         [TestCase(typeof(Nullable), null, "")]
@@ -177,14 +175,13 @@ namespace Plexdata.CsvParser.Tests.Internals
             }
             else
             {
-                Assert.IsFalse(true);
+                Assert.That(true, Is.False);
             }
 
             CultureInfo cultureInfo = culture == null ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
-            Assert.AreEqual(expected, TypeConverter.IntoString(actual, cultureInfo, CsvMappings.DefaultMappings));
+            Assert.That(TypeConverter.IntoString(actual, cultureInfo, CsvMappings.DefaultMappings), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase(null, typeof(Boolean), "de-DE", TestName = "IntoObject(Value: null, Type: valid, Exactly: false, Culture: valid)")]
         [TestCase("true", null, "de-DE", TestName = "IntoObject(Value: valid, Type: null, Exactly: false, Culture: valid)")]
         [TestCase("true", typeof(Boolean), null, TestName = "IntoObject(Value: valid, Type: valid, Exactly: false, Culture: null)")]
@@ -198,17 +195,15 @@ namespace Plexdata.CsvParser.Tests.Internals
                 info = new CultureInfo(culture);
             }
 
-            Assert.Throws<ArgumentNullException>(() => { TypeConverter.IntoObject(value, type, false, info, null); });
+            Assert.That(() => TypeConverter.IntoObject(value, type, false, info, null), Throws.ArgumentNullException);
         }
 
-        [Test]
         [TestCase(TestName = "IntoObject(Value: valid, Type: unsupported, Exactly: false, Culture: valid)")]
         public void IntoObject_UnsupportedType_ThrowsNotSupportedException()
         {
-            Assert.Throws<NotSupportedException>(() => { TypeConverter.IntoObject("value", typeof(TestCaseItem), false, CultureInfo.CurrentUICulture, null); });
+            Assert.That(() => TypeConverter.IntoObject("value", typeof(TestCaseItem), false, CultureInfo.CurrentUICulture, null), Throws.InstanceOf<NotSupportedException>());
         }
 
-        [Test]
         [TestCase(typeof(String), false, TestName = "IsNullable(Type: String, Expected: false)")]
         [TestCase(typeof(Boolean), false, TestName = "IsNullable(Type: Boolean, Expected: false)")]
         [TestCase(typeof(Boolean?), true, TestName = "IsNullable(Type: Boolean?, Expected: true)")]
@@ -218,10 +213,9 @@ namespace Plexdata.CsvParser.Tests.Internals
         [TestCase(typeof(DateTime?), true, TestName = "IsNullable(Type: DateTime?, Expected: true)")]
         public void IsNullable_VariousTypes_ResultAsExpected(Type type, Boolean expected)
         {
-            Assert.AreEqual(expected, (Boolean)this.ExecutePrivateStaticMethod("IsNullable", new Object[] { type }));
+            Assert.That((Boolean)this.ExecutePrivateStaticMethod("IsNullable", new Object[] { type }), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCaseSource("GetTrueMappingsTestCases")]
         public void GetTrueMappings_VariousValues_ResultAsExpected(Object data)
         {
@@ -229,10 +223,9 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             List<String> actual = (List<String>)this.ExecutePrivateStaticMethod("GetTrueMappings", new Object[] { item.Mapping });
 
-            Assert.AreEqual(item.Expected, String.Join("", actual));
+            Assert.That(String.Join("", actual), Is.EqualTo(item.Expected));
         }
 
-        [Test]
         [TestCaseSource("GetFalseMappingsTestCases")]
         public void GetFalseMappings_VariousValues_ResultAsExpected(Object data)
         {
@@ -240,10 +233,9 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             List<String> actual = (List<String>)this.ExecutePrivateStaticMethod("GetFalseMappings", new Object[] { item.Mapping });
 
-            Assert.AreEqual(item.Expected, String.Join("", actual));
+            Assert.That(String.Join("", actual), Is.EqualTo(item.Expected));
         }
 
-        [Test]
         [TestCaseSource("GetNullMappingsTestCases")]
         public void GetNullMappings_VariousValues_ResultAsExpected(Object data)
         {
@@ -251,10 +243,9 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             List<String> actual = (List<String>)this.ExecutePrivateStaticMethod("GetNullMappings", new Object[] { item.Mapping });
 
-            Assert.AreEqual(item.Expected, String.Join("", actual));
+            Assert.That(String.Join("", actual), Is.EqualTo(item.Expected));
         }
 
-        [Test]
         [TestCaseSource("IsTrueStringTestCases")]
         public void IsTrueString_VariousValues_ResultAsExpected(Object data)
         {
@@ -262,10 +253,9 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             Boolean actual = (Boolean)this.ExecutePrivateStaticMethod("IsTrueString", new Object[] { item.Value, item.Mapping });
 
-            Assert.AreEqual(item.Expected, actual);
+            Assert.That(actual, Is.EqualTo(item.Expected));
         }
 
-        [Test]
         [TestCaseSource("IsFalseStringTestCases")]
         public void IsFalseString_VariousValues_ResultAsExpected(Object data)
         {
@@ -273,10 +263,9 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             Boolean actual = (Boolean)this.ExecutePrivateStaticMethod("IsFalseString", new Object[] { item.Value, item.Mapping });
 
-            Assert.AreEqual(item.Expected, actual);
+            Assert.That(actual, Is.EqualTo(item.Expected));
         }
 
-        [Test]
         [TestCaseSource("IsNullStringTestCases")]
         public void IsNullString_VariousValues_ResultAsExpected(Object data)
         {
@@ -284,10 +273,9 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             Boolean actual = (Boolean)this.ExecutePrivateStaticMethod("IsNullString", new Object[] { item.Value, item.Mapping });
 
-            Assert.AreEqual(item.Expected, actual);
+            Assert.That(actual, Is.EqualTo(item.Expected));
         }
 
-        [Test]
         [TestCase(null, false, false, null, TestName = "AsString(Value: null, Exactly: false, Nullable: false, Expected: null)")]
         [TestCase(null, true, false, null, TestName = "AsString(Value: null, Exactly: true, Nullable: false, Expected: null)")]
         [TestCase(null, false, true, null, TestName = "AsString(Value: null, Exactly: false, Nullable: true, Expected: null)")]
@@ -308,10 +296,9 @@ namespace Plexdata.CsvParser.Tests.Internals
         [TestCase("<null>", false, true, null, TestName = "AsString(Value: <null>, Exactly: false, Nullable: true, Expected: null)")]
         public void AsString_VariousValues_ResultAsExpected(String value, Boolean exactly, Boolean nullable, Object expected)
         {
-            Assert.AreEqual((String)expected, (String)this.ExecutePrivateStaticMethod("AsString", new Object[] { value, exactly, nullable, CultureInfo.CurrentUICulture, null }));
+            Assert.That((String)this.ExecutePrivateStaticMethod("AsString", new Object[] { value, exactly, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((String)expected));
         }
 
-        [Test]
         [TestCase(null, false, false, TestName = "AsBoolean(Value: null, Exactly: false, Nullable: false, Expected: false)")]
         [TestCase(null, true, null, TestName = "AsBoolean(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, false, TestName = "AsBoolean(Value: empty, Exactly: false, Nullable: false, Expected: false)")]
@@ -333,25 +320,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((Boolean?)expected, (Boolean?)this.ExecutePrivateStaticMethod("AsBoolean", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Boolean?)this.ExecutePrivateStaticMethod("AsBoolean", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Boolean?)expected));
             }
             else
             {
-                Assert.AreEqual((Boolean)expected, (Boolean)this.ExecutePrivateStaticMethod("AsBoolean", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Boolean)this.ExecutePrivateStaticMethod("AsBoolean", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Boolean)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsBoolean(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsBoolean(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsBoolean(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("hello", TestName = "AsBoolean(Value: hello, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsBoolean_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsBoolean", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsBoolean", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, '\uffff', TestName = "AsCharacter(Value: null, Exactly: false, Nullable: false, Expected: max-char)")]
         [TestCase(null, true, null, TestName = "AsCharacter(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, '\uffff', TestName = "AsCharacter(Value: empty, Exactly: false, Nullable: false, Expected: max-char)")]
@@ -367,25 +352,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((Char?)expected, (Char?)this.ExecutePrivateStaticMethod("AsCharacter", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Char?)this.ExecutePrivateStaticMethod("AsCharacter", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Char?)expected));
             }
             else
             {
-                Assert.AreEqual((Char)expected, (Char)this.ExecutePrivateStaticMethod("AsCharacter", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Char)this.ExecutePrivateStaticMethod("AsCharacter", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Char)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsCharacter(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsCharacter(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsCharacter(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("toolong", TestName = "AsCharacter(Value: toolong, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsCharacter_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsCharacter", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsCharacter", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (SByte)127, TestName = "AsSInt8(Value: null, Exactly: false, Nullable: false, Expected: max-signed-byte)")]
         [TestCase(null, true, null, TestName = "AsSInt8(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (SByte)127, TestName = "AsSInt8(Value: empty, Exactly: false, Nullable: false, Expected: max-signed-byte)")]
@@ -403,25 +386,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((SByte?)expected, (SByte?)this.ExecutePrivateStaticMethod("AsSInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((SByte?)this.ExecutePrivateStaticMethod("AsSInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((SByte?)expected));
             }
             else
             {
-                Assert.AreEqual((SByte)expected, (SByte)this.ExecutePrivateStaticMethod("AsSInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((SByte)this.ExecutePrivateStaticMethod("AsSInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((SByte)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsSInt8(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsSInt8(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsSInt8(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("123456789", TestName = "AsSInt8(Value: 123456789, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsSInt8_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsSInt8", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsSInt8", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (Byte)255, TestName = "AsUInt8(Value: null, Exactly: false, Nullable: false, Expected: max-unsigned-byte)")]
         [TestCase(null, true, null, TestName = "AsUInt8(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (Byte)255, TestName = "AsUInt8(Value: empty, Exactly: false, Nullable: false, Expected: max-unsigned-byte)")]
@@ -437,25 +418,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((Byte?)expected, (Byte?)this.ExecutePrivateStaticMethod("AsUInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Byte?)this.ExecutePrivateStaticMethod("AsUInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Byte?)expected));
             }
             else
             {
-                Assert.AreEqual((Byte)expected, (Byte)this.ExecutePrivateStaticMethod("AsUInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Byte)this.ExecutePrivateStaticMethod("AsUInt8", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Byte)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsUInt8(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsUInt8(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsUInt8(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("123456789", TestName = "AsUInt8(Value: 123456789, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsUInt8_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsUInt8", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsUInt8", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (Int16)32767, TestName = "AsSInt16(Value: null, Exactly: false, Nullable: false, Expected: max-signed-short)")]
         [TestCase(null, true, null, TestName = "AsSInt16(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (Int16)32767, TestName = "AsSInt16(Value: empty, Exactly: false, Nullable: false, Expected: max-signed-short)")]
@@ -473,25 +452,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((Int16?)expected, (Int16?)this.ExecutePrivateStaticMethod("AsSInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Int16?)this.ExecutePrivateStaticMethod("AsSInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Int16?)expected));
             }
             else
             {
-                Assert.AreEqual((Int16)expected, (Int16)this.ExecutePrivateStaticMethod("AsSInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Int16)this.ExecutePrivateStaticMethod("AsSInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Int16)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsSInt16(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsSInt16(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsSInt16(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("123456789", TestName = "AsSInt16(Value: 123456789, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsSInt16_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsSInt16", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsSInt16", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (UInt16)65535, TestName = "AsUInt16(Value: null, Exactly: false, Nullable: false, Expected: max-unsigned-short)")]
         [TestCase(null, true, null, TestName = "AsUInt16(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (UInt16)65535, TestName = "AsUInt16(Value: empty, Exactly: false, Nullable: false, Expected: max-unsigned-short)")]
@@ -507,25 +484,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((UInt16?)expected, (UInt16?)this.ExecutePrivateStaticMethod("AsUInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((UInt16?)this.ExecutePrivateStaticMethod("AsUInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((UInt16?)expected));
             }
             else
             {
-                Assert.AreEqual((UInt16)expected, (UInt16)this.ExecutePrivateStaticMethod("AsUInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((UInt16)this.ExecutePrivateStaticMethod("AsUInt16", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((UInt16)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsUInt16(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsUInt16(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsUInt16(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("123456789", TestName = "AsUInt16(Value: 123456789, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsUInt16_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsUInt16", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsUInt16", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (Int32)2147483647, TestName = "AsSInt32(Value: null, Exactly: false, Nullable: false, Expected: max-signed-integer)")]
         [TestCase(null, true, null, TestName = "AsSInt32(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (Int32)2147483647, TestName = "AsSInt32(Value: empty, Exactly: false, Nullable: false, Expected: max-signed-integer)")]
@@ -543,25 +518,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((Int32?)expected, (Int32?)this.ExecutePrivateStaticMethod("AsSInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Int32?)this.ExecutePrivateStaticMethod("AsSInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Int32?)expected));
             }
             else
             {
-                Assert.AreEqual((Int32)expected, (Int32)this.ExecutePrivateStaticMethod("AsSInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Int32)this.ExecutePrivateStaticMethod("AsSInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Int32)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsSInt32(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsSInt32(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsSInt32(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("420042004200", TestName = "AsSInt32(Value: 420042004200, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsSInt32_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsSInt32", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsSInt32", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (UInt32)4294967295, TestName = "AsUInt32(Value: null, Exactly: false, Nullable: false, Expected: max-unsigned-integer)")]
         [TestCase(null, true, null, TestName = "AsUInt32(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (UInt32)4294967295, TestName = "AsUInt32(Value: empty, Exactly: false, Nullable: false, Expected: max-unsigned-integer)")]
@@ -577,25 +550,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((UInt32?)expected, (UInt32?)this.ExecutePrivateStaticMethod("AsUInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((UInt32?)this.ExecutePrivateStaticMethod("AsUInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((UInt32?)expected));
             }
             else
             {
-                Assert.AreEqual((UInt32)expected, (UInt32)this.ExecutePrivateStaticMethod("AsUInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((UInt32)this.ExecutePrivateStaticMethod("AsUInt32", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((UInt32)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsUInt32(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsUInt32(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsUInt32(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("420042004200", TestName = "AsUInt32(Value: 420042004200, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsUInt32_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsUInt32", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsUInt32", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (Int64)9223372036854775807, TestName = "AsSInt64(Value: null, Exactly: false, Nullable: false, Expected: max-signed-long)")]
         [TestCase(null, true, null, TestName = "AsSInt64(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (Int64)9223372036854775807, TestName = "AsSInt64(Value: empty, Exactly: false, Nullable: false, Expected: max-signed-long)")]
@@ -613,25 +584,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((Int64?)expected, (Int64?)this.ExecutePrivateStaticMethod("AsSInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Int64?)this.ExecutePrivateStaticMethod("AsSInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Int64?)expected));
             }
             else
             {
-                Assert.AreEqual((Int64)expected, (Int64)this.ExecutePrivateStaticMethod("AsSInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Int64)this.ExecutePrivateStaticMethod("AsSInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Int64)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsSInt64(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsSInt64(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsSInt64(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("42004200420042004200", TestName = "AsSInt64(Value: 42004200420042004200, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsSInt64_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsSInt64", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsSInt64", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCase(null, false, (UInt64)18446744073709551615, TestName = "AsUInt64(Value: null, Exactly: false, Nullable: false, Expected: max-unsigned-long)")]
         [TestCase(null, true, null, TestName = "AsUInt64(Value: null, Exactly: false, Nullable: true, Expected: null)")]
         [TestCase("", false, (UInt64)18446744073709551615, TestName = "AsUInt64(Value: empty, Exactly: false, Nullable: false, Expected: max-unsigned-long)")]
@@ -647,25 +616,23 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             if (nullable)
             {
-                Assert.AreEqual((UInt64?)expected, (UInt64?)this.ExecutePrivateStaticMethod("AsUInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((UInt64?)this.ExecutePrivateStaticMethod("AsUInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((UInt64?)expected));
             }
             else
             {
-                Assert.AreEqual((UInt64)expected, (UInt64)this.ExecutePrivateStaticMethod("AsUInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((UInt64)this.ExecutePrivateStaticMethod("AsUInt64", new Object[] { value, false, nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((UInt64)expected));
             }
         }
 
-        [Test]
         [TestCase(null, TestName = "AsUInt64(Value: null, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("", TestName = "AsUInt64(Value: empty, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("   ", TestName = "AsUInt64(Value: whitespace, Exactly: true, Nullable: false, Expected: FormatException)")]
         [TestCase("4200420042420042004200", TestName = "AsUInt64(Value: 4200420042420042004200, Exactly: true, Nullable: false, Expected: FormatException)")]
         public void AsUInt64_VariousValuesExactly_ThrowsFormatException(String value)
         {
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsUInt64", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsUInt64", new Object[] { value, true, false, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCaseSource("PositiveDateTimeTestCases")]
         public void AsDateTime_ValuesNotExactly_ResultAsExpected(Object data)
         {
@@ -673,24 +640,22 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             if (item.Nullable)
             {
-                Assert.AreEqual((DateTime?)item.Expected, (DateTime?)this.ExecutePrivateStaticMethod("AsDateTime", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((DateTime?)this.ExecutePrivateStaticMethod("AsDateTime", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((DateTime?)item.Expected));
             }
             else
             {
-                Assert.AreEqual((DateTime)item.Expected, (DateTime)this.ExecutePrivateStaticMethod("AsDateTime", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((DateTime)this.ExecutePrivateStaticMethod("AsDateTime", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((DateTime)item.Expected));
             }
         }
 
-        [Test]
         [TestCaseSource("NegativeDateTimeTestCases")]
         public void AsDateTime_ValuesExactly_ThrowsFormatException(Object data)
         {
             TestCaseItem item = (TestCaseItem)data;
 
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsDateTime", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsDateTime", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCaseSource("PositiveDecimalTestCases")]
         public void AsDecimal_ValuesNotExactly_ResultAsExpected(Object data)
         {
@@ -698,24 +663,22 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             if (item.Nullable)
             {
-                Assert.AreEqual((Decimal?)item.Expected, (Decimal?)this.ExecutePrivateStaticMethod("AsDecimal", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Decimal?)this.ExecutePrivateStaticMethod("AsDecimal", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Decimal?)item.Expected));
             }
             else
             {
-                Assert.AreEqual((Decimal)item.Expected, (Decimal)this.ExecutePrivateStaticMethod("AsDecimal", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Decimal)this.ExecutePrivateStaticMethod("AsDecimal", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Decimal)item.Expected));
             }
         }
 
-        [Test]
         [TestCaseSource("NegativeDecimalTestCases")]
         public void AsDecimal_ValuesExactly_ThrowsFormatException(Object data)
         {
             TestCaseItem item = (TestCaseItem)data;
 
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsDecimal", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsDecimal", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCaseSource("PositiveDoubleTestCases")]
         public void AsDouble_ValuesNotExactly_ResultAsExpected(Object data)
         {
@@ -723,24 +686,22 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             if (item.Nullable)
             {
-                Assert.AreEqual((Double?)item.Expected, (Double?)this.ExecutePrivateStaticMethod("AsDouble", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Double?)this.ExecutePrivateStaticMethod("AsDouble", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Double?)item.Expected));
             }
             else
             {
-                Assert.AreEqual((Double)item.Expected, (Double)this.ExecutePrivateStaticMethod("AsDouble", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Double)this.ExecutePrivateStaticMethod("AsDouble", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Double)item.Expected));
             }
         }
 
-        [Test]
         [TestCaseSource("NegativeDoubleTestCases")]
         public void AsDouble_ValuesExactly_ThrowsFormatException(Object data)
         {
             TestCaseItem item = (TestCaseItem)data;
 
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsDouble", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsDouble", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
-        [Test]
         [TestCaseSource("PositiveSingleTestCases")]
         public void AsSingle_ValuesNotExactly_ResultAsExpected(Object data)
         {
@@ -748,21 +709,20 @@ namespace Plexdata.CsvParser.Tests.Internals
 
             if (item.Nullable)
             {
-                Assert.AreEqual((Single?)item.Expected, (Single?)this.ExecutePrivateStaticMethod("AsSingle", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Single?)this.ExecutePrivateStaticMethod("AsSingle", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Single?)item.Expected));
             }
             else
             {
-                Assert.AreEqual((Single)item.Expected, (Single)this.ExecutePrivateStaticMethod("AsSingle", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }));
+                Assert.That((Single)this.ExecutePrivateStaticMethod("AsSingle", new Object[] { item.Value, false, item.Nullable, CultureInfo.CurrentUICulture, null }), Is.EqualTo((Single)item.Expected));
             }
         }
 
-        [Test]
         [TestCaseSource("NegativeSingleTestCases")]
         public void AsSingle_ValuesExactly_ThrowsFormatException(Object data)
         {
             TestCaseItem item = (TestCaseItem)data;
 
-            Assert.Throws<FormatException>(() => { this.ExecutePrivateStaticMethod("AsSingle", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }); });
+            Assert.That(() => this.ExecutePrivateStaticMethod("AsSingle", new Object[] { item.Value, item.Exactly, item.Nullable, CultureInfo.CurrentUICulture, null }), Throws.InstanceOf<FormatException>());
         }
 
         private class TestCaseItem

@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,16 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvMappings))]
     public class CsvMappingsTests
     {
@@ -38,7 +42,7 @@ namespace Plexdata.CsvParser.Tests.Processors
         {
             String expected = "TrueValue: \"true\", FalseValue: \"false\", NullValue: \"\", TrueValues: [\"true\", \"1\", \"y\", \"yes\"], FalseValues: [\"false\", \"0\", \"n\", \"no\"], NullValues: [\"<null>\"]";
             CsvMappings mapping = new CsvMappings();
-            Assert.AreEqual(expected, mapping.ToString());
+            Assert.That(mapping.ToString(), Is.EqualTo(expected));
         }
 
         [Test]
@@ -54,7 +58,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 FalseValues = new List<String> { "no", "nope" },
                 NullValues = new List<String> { "hello", "empty" },
             };
-            Assert.AreEqual(expected, mapping.ToString());
+            Assert.That(mapping.ToString(), Is.EqualTo(expected));
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,21 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
+using Plexdata.Utilities.Testing;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Plexdata.CsvParser.Tests.Attributes
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvDocumentAttribute))]
     public class CsvDocumentAttributeTests
     {
         [Test]
         public void Construction_DefaultConstructor_ResultDoesNotThrow()
         {
-            Assert.DoesNotThrow(() => { new CsvDocumentAttribute(); });
+            Assert.That(() => new CsvDocumentAttribute(), Throws.Nothing);
         }
     }
 }

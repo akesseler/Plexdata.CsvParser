@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,10 @@
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -35,28 +37,28 @@ using System.Text;
 namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvImporter<TestClassBase>))]
     public class CsvImporterTests
     {
         private class TestClassBase { }
 
-        [Test]
         [TestCase(null, TestName = "Load(Filename: null, Settings: null)")]
         [TestCase("", TestName = "Load(Filename: empty, Settings: null)")]
         [TestCase("   ", TestName = "Load(Filename: whitespace, Settings: null)")]
         public void Load_InvalidFilename_ThrowsArgumentException(String filename)
         {
             CsvSettings settings = null;
-            Assert.Throws<ArgumentException>(() => { CsvImporter<TestClassBase>.Load(filename, settings); });
+            Assert.That(() => CsvImporter<TestClassBase>.Load(filename, settings), Throws.ArgumentException);
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Load_FileDoesNotExist_ThrowsFileNotFoundException()
         {
             String filename = @"c:\temp\missing-file.csv";
             CsvSettings settings = null;
-            Assert.Throws<FileNotFoundException>(() => { CsvImporter<TestClassBase>.Load(filename, settings); });
+            Assert.That(() => CsvImporter<TestClassBase>.Load(filename, settings), Throws.InstanceOf<FileNotFoundException>());
         }
 
         [Test]
@@ -65,11 +67,10 @@ namespace Plexdata.CsvParser.Tests.Processors
             Stream stream = null;
             CsvSettings settings = null;
 
-            Assert.Throws<ArgumentNullException>(() => { CsvImporter<TestClassBase>.Load(stream, settings); });
+            Assert.That(() => CsvImporter<TestClassBase>.Load(stream, settings), Throws.ArgumentNullException);
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Load_StreamCanWriteOnly_ThrowsArgumentException()
         {
             String filename = Path.GetTempFileName();
@@ -80,7 +81,8 @@ namespace Plexdata.CsvParser.Tests.Processors
             {
                 stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
 
-                Assert.Throws<ArgumentException>(() => { CsvImporter<TestClassBase>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClassBase>.Load(stream, settings), Throws.ArgumentException);
+
                 this.CleanUp(stream, filename);
             }
             catch
@@ -96,7 +98,7 @@ namespace Plexdata.CsvParser.Tests.Processors
             using (Stream stream = new MemoryStream())
             {
                 CsvSettings settings = null;
-                Assert.Throws<ArgumentNullException>(() => { CsvImporter<TestClassBase>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClassBase>.Load(stream, settings), Throws.ArgumentNullException);
             }
         }
 
@@ -112,7 +114,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
             using (MemoryStream stream = new MemoryStream(settings.Encoding.GetBytes(content)))
             {
-                Assert.Throws<FormatException>(() => { CsvImporter<TestClass1>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClass1>.Load(stream, settings), Throws.InstanceOf<FormatException>());
             }
         }
 
@@ -128,7 +130,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
             using (MemoryStream stream = new MemoryStream(settings.Encoding.GetBytes(content)))
             {
-                Assert.Throws<FormatException>(() => { CsvImporter<TestClass1>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClass1>.Load(stream, settings), Throws.InstanceOf<FormatException>());
             }
         }
 
@@ -144,7 +146,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
             using (MemoryStream stream = new MemoryStream(settings.Encoding.GetBytes(content)))
             {
-                Assert.Throws<FormatException>(() => { CsvImporter<TestClass1>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClass1>.Load(stream, settings), Throws.InstanceOf<FormatException>());
             }
         }
 
@@ -160,7 +162,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
             using (MemoryStream stream = new MemoryStream(settings.Encoding.GetBytes(content)))
             {
-                Assert.Throws<InvalidOperationException>(() => { CsvImporter<TestClass2>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClass2>.Load(stream, settings), Throws.InstanceOf<InvalidOperationException>());
             }
         }
 
@@ -176,7 +178,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
             using (MemoryStream stream = new MemoryStream(settings.Encoding.GetBytes(content)))
             {
-                Assert.Throws<InvalidOperationException>(() => { CsvImporter<TestClass3>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClass3>.Load(stream, settings), Throws.InstanceOf<InvalidOperationException>());
             }
         }
 
@@ -192,7 +194,7 @@ namespace Plexdata.CsvParser.Tests.Processors
 
             using (MemoryStream stream = new MemoryStream(settings.Encoding.GetBytes(content)))
             {
-                Assert.Throws<FormatException>(() => { CsvImporter<TestClass1>.Load(stream, settings); });
+                Assert.That(() => CsvImporter<TestClass1>.Load(stream, settings), Throws.InstanceOf<FormatException>());
             }
         }
 
@@ -215,12 +217,11 @@ namespace Plexdata.CsvParser.Tests.Processors
             {
                 List<TestClass4> actual = CsvImporter<TestClass4>.Load(stream, settings).ToList();
 
-                Assert.AreEqual(expected, actual);
+                Assert.That(actual, Is.EqualTo(expected));
             }
         }
 
-        [Test]
-        [TestCase(Category = TestHelper.IntegrationTest)]
+        [TestCase(Category = TestType.IntegrationTest)]
         public void Load_FullIntegrationTest_ResultIsAsExpected()
         {
             List<CsvCustomer> expected = new List<CsvCustomer>
@@ -283,7 +284,7 @@ namespace Plexdata.CsvParser.Tests.Processors
                 actual = CsvImporter<CsvCustomer>.Load(stream, settings).ToList();
             }
 
-            Assert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         #region Test helper classes
@@ -433,7 +434,7 @@ namespace Plexdata.CsvParser.Tests.Processors
         {
             try
             {
-                if (TestHelper.IsIntegrationTest())
+                if (TestHelper.IsIntegrationTestCategory())
                 {
                     if (stream != null)
                     {

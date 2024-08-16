@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@
 using Plexdata.CsvParser.Internals;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Plexdata.CsvParser.Processors
 {
@@ -38,7 +40,7 @@ namespace Plexdata.CsvParser.Processors
     /// <remarks>
     /// <para>
     /// CSV actually means Comma Separated Values. Sometimes it is also called as Character 
-    /// Separated Values. But not matter which name is used, CSV always represents a text file 
+    /// Separated Values. But no matter which name is used, CSV always represents a text file 
     /// mainly used for data exchange between different system.
     /// </para>
     /// <para>
@@ -253,20 +255,7 @@ namespace Plexdata.CsvParser.Processors
                 throw new ArgumentNullException(nameof(settings), "The CSV settings are invalid.");
             }
 
-            CsvContainer result = new CsvContainer();
-            List<String> lines = new List<String>();
-
-            using (StreamReader reader = new StreamReader(stream, settings.Encoding))
-            {
-                while (!reader.EndOfStream)
-                {
-                    String line = reader.ReadLine();
-                    if (!String.IsNullOrWhiteSpace(line))
-                    {
-                        lines.Add(line);
-                    }
-                }
-            }
+            List<String> lines = CsvReader.ReadLines(stream, settings.Encoding);
 
             if (lines.Count > 0)
             {
@@ -279,10 +268,184 @@ namespace Plexdata.CsvParser.Processors
                     content.Add(ProcessHelper.SplitIntoCells(lines[outer], separator));
                 }
 
-                result = new CsvContainer(content, settings);
+                return new CsvContainer(content, settings);
             }
 
-            return result;
+            return new CsvContainer();
+        }
+
+        #endregion
+
+        #region Private methods
+
+        /// <summary>
+        /// Reads all lines from input <paramref name="stream"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method provides a more RFC-compliant way to read the lines of a CSV file. 
+        /// This particularly applies to the processing of strings and the line breaks they 
+        /// contain.
+        /// </para>
+        /// Please not that any kind of line break, such as <c>CR="\r"</c>, <c>LF="\n"</c> or 
+        /// <c>CRLF="\r\n"</c>, is replace by the platform-specific line break. This actually 
+        /// contradicts the RFC, which requires CRLF as line break.
+        /// <para>
+        /// </para>
+        /// </remarks>
+        /// <param name="stream">
+        /// The input stream to read all lines from.
+        /// </param>
+        /// <param name="encoding">
+        /// The file encoding to be used.
+        /// </param>
+        /// <returns>
+        /// All lines read from input stream.
+        /// </returns>
+        private static List<String> ReadLines(Stream stream, Encoding encoding)
+        {
+            // As per RFC:
+            // - String may or may not be enclosed by double quotes ("may not" is unsupported).
+            // - Line endings within strings are allowed but must be consist of CRLF.
+            // - Each double quote in a string has to be escaped by another double quote.
+
+            const Char DQ = '\"';
+            const Char CR = '\r';
+            const Char LF = '\n';
+            const Char BS = '\\';
+
+            List<String> lines = new List<String>();
+
+            using (StreamReader reader = new StreamReader(stream, encoding))
+            {
+                StringBuilder line = new StringBuilder(512);
+
+                while (!reader.EndOfStream)
+                {
+                    Char ch = (Char)reader.Read();
+
+                    // Check for string start.
+                    if (ch == DQ)
+                    {
+                        line.Append(ch);
+
+                        while (!reader.EndOfStream)
+                        {
+                            ch = (Char)reader.Read();
+
+                            // Feature: Check for \" and replace by "".
+                            if (ch == BS && reader.Peek() == DQ)
+                            {
+                                ch = DQ;
+                            }
+
+                            if (ch == DQ)
+                            {
+                                // Check for escaped "double quote" and continue "in string" if needed.
+                                if (reader.Peek() == DQ)
+                                {
+                                    reader.Read();
+
+                                    line.Append(DQ);
+                                    line.Append(DQ);
+
+                                    continue;
+                                }
+
+                                // String end reached.
+                                line.Append(DQ);
+                                break;
+                            }
+
+                            // Check for "in string" line break.
+
+                            if (ch == CR)
+                            {
+                                if (reader.Peek() == LF)
+                                {
+                                    reader.Read();
+                                }
+
+                                // Replace by platform-specific line break.
+                                line.Append(Environment.NewLine);
+
+                                continue;
+                            }
+
+                            if (ch == LF)
+                            {
+                                // Replace by platform-specific line break.
+                                line.Append(Environment.NewLine);
+
+                                continue;
+                            }
+
+                            line.Append(ch);
+                        }
+
+                        continue;
+                    }
+
+                    // Check for CSV line end.
+
+                    if (ch == CR)
+                    {
+                        if (reader.Peek() == LF)
+                        {
+                            reader.Read();
+                        }
+
+                        lines.Add(line.ToString());
+                        line.Clear();
+
+                        continue;
+                    }
+
+                    if (ch == LF)
+                    {
+                        lines.Add(line.ToString());
+                        line.Clear();
+
+                        continue;
+                    }
+
+                    line.Append(ch);
+                }
+
+                // Handle remaining "last line" data.
+                if (line.Length > 0)
+                {
+                    String temp = line.ToString();
+
+                    if (!String.IsNullOrWhiteSpace(temp))
+                    {
+                        lines.Add(temp);
+                        line.Clear();
+                    }
+                }
+            }
+
+            CsvReader.DumpLines(lines);
+
+            return lines;
+        }
+
+        /// <summary>
+        /// Prints processed lines.
+        /// </summary>
+        /// <remarks>
+        /// This method prints processed lines, but only in debug mode.
+        /// </remarks>
+        /// <param name="lines">
+        /// Lines to print.
+        /// </param>
+        [Conditional("DEBUG")]
+        private static void DumpLines(IEnumerable<String> lines)
+        {
+            foreach (String line in lines)
+            {
+                Debug.WriteLine(line.Replace("\r", "\\r").Replace("\n", "\\n"));
+            }
         }
 
         #endregion

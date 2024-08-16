@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,31 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
+using Plexdata.Utilities.Testing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Plexdata.CsvParser.Tests.Attributes
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvColumnAttribute))]
     public class CsvColumnAttributeTests
     {
         [Test]
         public void Construction_DefaultConstructor_ResultDoesNotThrow()
         {
-            Assert.DoesNotThrow(() => { new CsvColumnAttribute(); });
+            Assert.That(() => new CsvColumnAttribute(), Throws.Nothing);
         }
 
         [Test]
         public void Construction_DefaultConstructor_ResultIsTrue()
         {
             CsvColumnAttribute attribute = new CsvColumnAttribute();
-            Assert.IsTrue(attribute.Header == String.Empty && attribute.Offset == -1);
+            Assert.That(attribute.Header == String.Empty && attribute.Offset == -1, Is.True);
         }
 
-        [Test]
         [TestCase(null)]
         [TestCase("")]
         [TestCase("test-header")]
@@ -53,17 +56,16 @@ namespace Plexdata.CsvParser.Tests.Attributes
         {
             CsvColumnAttribute attribute = new CsvColumnAttribute();
             attribute.Header = expected;
-            Assert.AreEqual(expected, attribute.Header);
+            Assert.That(attribute.Header, Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase(-42)]
         [TestCase(42)]
         public void Offset_SetValue_ResultAreEqual(Int32 expected)
         {
             CsvColumnAttribute attribute = new CsvColumnAttribute();
             attribute.Offset = expected;
-            Assert.AreEqual(expected, attribute.Offset);
+            Assert.That(attribute.Offset, Is.EqualTo(expected));
         }
     }
 }

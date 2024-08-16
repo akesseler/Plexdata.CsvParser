@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,15 @@
 
 using NUnit.Framework;
 using Plexdata.CsvParser.Processors;
+using Plexdata.Utilities.Testing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Plexdata.CsvParser.Tests.Processors
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(CsvSettings))]
     public class CsvSettingsTests
     {
@@ -37,20 +41,18 @@ namespace Plexdata.CsvParser.Tests.Processors
         {
             String expected = "Separator: \",\", Encoding: \"utf-8\", Heading: \"True\", Textual: \"False\", Exactly: \"False\", Culture: \"de-DE\", Mappings: TrueValue: \"true\", FalseValue: \"false\", NullValue: \"\", TrueValues: [\"true\", \"1\", \"y\", \"yes\"], FalseValues: [\"false\", \"0\", \"n\", \"no\"], NullValues: [\"<null>\"]";
             CsvSettings settings = new CsvSettings();
-            Assert.AreEqual(expected, settings.ToString());
+            Assert.That(settings.ToString(), Is.EqualTo(expected));
         }
 
-        [Test]
         [TestCase('\0')]
         [TestCase('\r')]
         [TestCase('\n')]
         public void Separator_InvalidValues_ThrowsArgumentException(Char separator)
         {
             CsvSettings settings = new CsvSettings();
-            Assert.Throws<ArgumentException>(() => { settings.Separator = separator; });
+            Assert.That(() => settings.Separator = separator, Throws.ArgumentException);
         }
 
-        [Test]
         [TestCase(',')]
         [TestCase(':')]
         [TestCase('\t')]
@@ -59,21 +61,21 @@ namespace Plexdata.CsvParser.Tests.Processors
         public void Separator_ValidValues_ResultIsEqual(Char separator)
         {
             CsvSettings settings = new CsvSettings { Separator = separator };
-            Assert.AreEqual(separator, settings.Separator);
+            Assert.That(settings.Separator, Is.EqualTo(separator));
         }
 
         [Test]
         public void Encoding_ValueIsNull_ThrowsArgumentNullException()
         {
             CsvSettings settings = new CsvSettings();
-            Assert.Throws<ArgumentNullException>(() => { settings.Encoding = null; });
+            Assert.That(() => settings.Encoding = null, Throws.ArgumentNullException);
         }
 
         [Test]
         public void Culture_ValueIsNull_ThrowsArgumentNullException()
         {
             CsvSettings settings = new CsvSettings();
-            Assert.Throws<ArgumentNullException>(() => { settings.Culture = null; });
+            Assert.That(() => settings.Culture = null, Throws.ArgumentNullException);
         }
     }
 }

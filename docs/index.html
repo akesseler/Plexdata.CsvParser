@@ -71,6 +71,7 @@ tbody tr:nth-child(odd){
   <a href="#licensing">Licensing</a>
   <a href="#installation">Installation</a>
   <a href="#escaping">Escaping</a>
+  <a href="#linebreak">Line Break</a>
   <a href="#importing">Importing</a>
   <a href="#exporting">Exporting</a>
   <a href="#reading">Reading</a>
@@ -117,7 +118,7 @@ The software has been published under the terms of
 <h3>MIT License</h3>
 
 <p>
-Copyright &copy; 2022 <a target="_blank" href="http://www.plexdata.de/">plexdata.de</a>
+Copyright &copy; 2024 <a target="_blank" href="http://www.plexdata.de/">plexdata.de</a>
 </p>
 <p>
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
@@ -184,9 +185,9 @@ This mean for example that values which contain a double&#8209;quote inside thei
 this double&#8209;quote. Consider the following CSV content for an example what is actually meant.
 </p>
 
-<pre><code>Name,                Notes
-"Marley, Bob",       "Having an ""escaped"" double quote in here."
-"Hurley, Elizabeth", "Having another \"escaped\" double quote in here."</code></pre>
+<pre><code>Name,        Notes
+"Some Name", "Having an ""escaped"" double quote in here."
+"Some Name", "Having another \"escaped\" double quote in here."</code></pre>
 
 <p>
 As shown in the example above, the first data row contains <code>""escaped""</code>, which actually represents 
@@ -199,6 +200,30 @@ which of these variations is used, the <i>CSV Importer</i> is able to process bo
 In contrast to that, the <i>CSV Exporter</i> will always replace each double&#8209;quote inside a string value 
 into two double&#8209;quotes. This is exactly the behavior which the RFC 4180 describes.
 </p>
+
+<h2 id="linebreak">Line Break</h2>
+
+<p>
+The latest version of this library supports line breaks within strings. This is indeed in accordance with the RFC, 
+which allows this in section 2 number 6.
+</p>
+
+<p>
+But the RFC only allows <i>Carriage Return</i> (CR: <code>'\r'</code>, <code>0x0D</code>) plus <i>Line Feed</i> 
+(LF: <code>'\n'</code>, <code>0x0A</code>) in strings. In contrast to that this library is able to handle single 
+CR, single LF as well as CR plus LF accordingly. But note, each line break is converted into its platform&#8209;specific 
+representation, which means CRLF on Windows systems or LF on Unix&#8209;based systems.
+</p>
+
+<p>
+Furthermore, it is important to note that this feature can only be used if the strings with line breaks are enclosed 
+in double quotes, as shown in this example.
+</p>
+
+<pre><code>Name,        Notes
+"Some Name", <b>"Having a string \r\n
+with ""line break"" here."</b>
+"Some Name", "Having another string without line break."</code></pre>
 
 <h2 id="importing">Importing</h2>
 

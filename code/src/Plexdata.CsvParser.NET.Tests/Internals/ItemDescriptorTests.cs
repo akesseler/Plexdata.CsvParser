@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  * 
- * Copyright (c) 2022 plexdata.de
+ * Copyright (c) 2024 plexdata.de
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,23 +25,26 @@
 using NUnit.Framework;
 using Plexdata.CsvParser.Attributes;
 using Plexdata.CsvParser.Internals;
+using Plexdata.Utilities.Testing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
 namespace Plexdata.CsvParser.Tests.Internals
 {
     [TestFixture]
+    [ExcludeFromCodeCoverage]
+    [Category(TestType.UnitTest)]
     [TestOf(nameof(ItemDescriptor))]
     public class ItemDescriptorTests
     {
-        [Test]
         [TestCase(0, 0)]
         [TestCase(0, 1)]
         [TestCase(1, 0)]
         public void Construction_ItemDescriptor_ThrowsArgumentNullException(Int32 column, Int32 origin)
         {
-            Assert.Throws<ArgumentNullException>(() => { new ItemDescriptor(column == 0 ? null : new CsvColumnAttribute(), origin == 0 ? null : new PropertyInfoTest()); });
+            Assert.That(() => new ItemDescriptor(column == 0 ? null : new CsvColumnAttribute(), origin == 0 ? null : new PropertyInfoTest()), Throws.ArgumentNullException);
         }
 
         [Test]
@@ -49,7 +52,7 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             CsvColumnAttribute column = new CsvColumnAttribute();
             ItemDescriptor actual = new ItemDescriptor(column, new PropertyInfoTest());
-            Assert.AreEqual(column, actual.Column);
+            Assert.That(actual.Column, Is.EqualTo(column));
         }
 
         [Test]
@@ -57,10 +60,9 @@ namespace Plexdata.CsvParser.Tests.Internals
         {
             PropertyInfoTest origin = new PropertyInfoTest();
             ItemDescriptor actual = new ItemDescriptor(new CsvColumnAttribute(), origin);
-            Assert.AreEqual(origin, actual.Origin);
+            Assert.That(actual.Origin, Is.EqualTo(origin));
         }
 
-        [Test]
         [TestCase("CanNeverBeNull", null, -1)]
         [TestCase("CanNeverBeNull", "", -1)]
         [TestCase("CanNeverBeNull", "  \t \r\n \v", -1)]
@@ -76,7 +78,7 @@ namespace Plexdata.CsvParser.Tests.Internals
             CsvColumnAttribute column = new CsvColumnAttribute { Header = $"{headerName}", Offset = offsetValue, };
             String expected = $"Offset: \"{offsetValue}\", Header: \"{headerName}\", Origin: \"{originName}\"";
             ItemDescriptor actual = new ItemDescriptor(column, origin);
-            Assert.AreEqual(expected, actual.ToString());
+            Assert.That(actual.ToString(), Is.EqualTo(expected));
         }
 
         private class PropertyInfoTest : PropertyInfo
